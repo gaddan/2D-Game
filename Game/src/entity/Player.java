@@ -15,10 +15,18 @@ public class Player extends Entity{
 	KeyHandler keyH;
 	String lastDirection;
 	
+	public final int screenX;
+	public final int screenY;
+	
 	public Player(GamePanel gamePanel, KeyHandler keyH) {
 		
 		this.gamePanel = gamePanel;
 		this.keyH = keyH;
+		
+		// first part gets to top left corner, not exact middle, hence -part
+		screenX =  gamePanel.screenWidth/2 - (gamePanel.tileSize/2);
+		screenY = gamePanel.screenHeight/2 - (gamePanel.tileSize/2);
+		
 		setDefaultValues();
 		getPlayerImage();
 		
@@ -26,8 +34,8 @@ public class Player extends Entity{
 
 	// spawn
 	public void setDefaultValues() {
-		x = 100;
-		y = 100;
+		worldX = gamePanel.tileSize * 23;
+		worldY = gamePanel.tileSize * 21;
 		speed = 4;
 		direction = "down";
 	}
@@ -56,16 +64,16 @@ public class Player extends Entity{
 				
 			if(keyH.isUpPressed()) {
 				direction = "up";
-				y -= speed;
+				worldY -= speed;
 			} else if (keyH.isDownPressed()) {
 				direction = "down";
-				y += speed;
+				worldY += speed;
 			} else if (keyH.isLeftPressed()) {
 				direction = "left";
-				x -= speed;
+				worldX -= speed;
 			} else if (keyH.isRightPressed()) {
 				direction = "right";
-				x += speed;
+				worldX += speed;
 			} else if(lastDirection == "up") {
 				direction = "idleUp";
 			} else if(lastDirection == "down") {
@@ -134,7 +142,7 @@ public class Player extends Entity{
 			image = right1;
 			break;
 		}
-		g2.drawImage(image, x, y, gamePanel.tileSize, gamePanel.tileSize, null);
+		g2.drawImage(image, screenX, screenY, gamePanel.tileSize, gamePanel.tileSize, null);
 	}
 	
 }
