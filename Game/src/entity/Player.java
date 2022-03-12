@@ -1,6 +1,7 @@
 package entity;
 
 import java.awt.Graphics2D;
+import java.awt.Rectangle;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 
@@ -26,6 +27,8 @@ public class Player extends Entity{
 		// first part gets to top left corner, not exact middle, hence -part
 		screenX =  gamePanel.screenWidth/2 - (gamePanel.tileSize/2);
 		screenY = gamePanel.screenHeight/2 - (gamePanel.tileSize/2);
+		
+		solidArea = new Rectangle(8, 16, 32, 32);
 		
 		setDefaultValues();
 		getPlayerImage();
@@ -64,16 +67,12 @@ public class Player extends Entity{
 				
 			if(keyH.isUpPressed()) {
 				direction = "up";
-				worldY -= speed;
 			} else if (keyH.isDownPressed()) {
 				direction = "down";
-				worldY += speed;
 			} else if (keyH.isLeftPressed()) {
 				direction = "left";
-				worldX -= speed;
 			} else if (keyH.isRightPressed()) {
 				direction = "right";
-				worldX += speed;
 			} else if(lastDirection == "up") {
 				direction = "idleUp";
 			} else if(lastDirection == "down") {
@@ -82,6 +81,28 @@ public class Player extends Entity{
 				direction = "idleLeft";
 			} else if(lastDirection == "right") {
 				direction = "idleRight";
+			}
+			
+			
+			collisionOn = false;
+			gamePanel.cChecker.checkTile(this);
+			
+			
+			if(collisionOn == false) {
+				switch(direction) {
+				case "up":
+					worldY -= speed;
+					break;
+				case "down":
+					worldY += speed;
+					break;
+				case "left":
+					worldX -= speed;
+					break;
+				case "right":
+					worldX += speed;
+					break;
+				}
 			}
 			
 			lastDirection = direction;

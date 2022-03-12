@@ -13,8 +13,8 @@ import main.GamePanel;
 public class TileManager {
 
 	GamePanel gamePanel;
-	Tile[] tile;
-	int mapTileNum [][];
+	public Tile[] tile;
+	public int mapTileNum [][];
 	
 	public TileManager(GamePanel gamePanel) {
 		this.gamePanel = gamePanel;
@@ -37,12 +37,15 @@ public class TileManager {
 
 		tile[1] = new Tile();
 		tile[1].image = sprite.getSubimage(32,0,16,16); // wall
+		tile[1].collision = true;
 		
 		tile[2] = new Tile();
 		tile[2].image = sprite.getSubimage(48,0,16,16); // water
+		tile[2].collision = true;
 		
 		tile[3] = new Tile();
 		tile[3].image = sprite.getSubimage(64,0,16,16); // tree
+		tile[3].collision = true;
 		
 		tile[4] = new Tile();
 		tile[4].image = sprite.getSubimage(80,0,16,16); // sand
