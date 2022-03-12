@@ -17,6 +17,7 @@ public class Main {
 		window.pack();
 		window.setVisible(true);
 		
+		gamePanel.setupGame();
 		gamePanel.startGameThread();
 	}
 
