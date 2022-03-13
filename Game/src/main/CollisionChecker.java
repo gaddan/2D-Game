@@ -63,4 +63,76 @@ public class CollisionChecker {
 			break;
 		}
 	}
+	
+	public int checkObject(Entity entity, boolean player) {
+		
+		int index = 999;
+		
+		for (int i = 0; i < gamePanel.obj.length; i++) {
+			if(gamePanel.obj[i] != null) {
+				// get entity's solid area position
+				entity.solidArea.x = entity.worldX + entity.solidArea.x;
+				entity.solidArea.y = entity.worldY + entity.solidArea.y;
+				// get object's solid area position
+				gamePanel.obj[i].solidArea.x = gamePanel.obj[i].worldX + gamePanel.obj[i].solidArea.x;
+				gamePanel.obj[i].solidArea.y = gamePanel.obj[i].worldY + gamePanel.obj[i].solidArea.y;
+				
+				switch (entity.direction) {
+				case "up":
+					entity.solidArea.y -= entity.speed;
+					if(entity.solidArea.intersects(gamePanel.obj[i].solidArea)) {
+						if(gamePanel.obj[i].collision == true) {
+							entity.collisionOn = true;
+						}
+						if(player == true) {
+							index = i;
+						}						
+					}
+					
+					break;
+				case "down":
+					entity.solidArea.y += entity.speed;
+					if(entity.solidArea.intersects(gamePanel.obj[i].solidArea)) {
+						if(gamePanel.obj[i].collision == true) {
+							entity.collisionOn = true;
+						}
+						if(player == true) {
+							index = i;
+						}						
+					}
+
+					break;
+				case "left":
+					entity.solidArea.x -= entity.speed;
+					if(entity.solidArea.intersects(gamePanel.obj[i].solidArea)) {
+						if(gamePanel.obj[i].collision == true) {
+							entity.collisionOn = true;
+						}
+						if(player == true) {
+							index = i;
+						}						
+					}
+					break;
+				case "right":
+					entity.solidArea.x += entity.speed;
+					if(entity.solidArea.intersects(gamePanel.obj[i].solidArea)) {
+						if(gamePanel.obj[i].collision == true) {
+							entity.collisionOn = true;
+						}
+						if(player == true) {
+							index = i;
+						}						
+					}
+					break;
+				}
+				entity.solidArea.x = entity.solidAreaDefaultX;
+				entity.solidArea.y = entity.solidAreaDefaultY;
+				gamePanel.obj[i].solidArea.x = gamePanel.obj[i].solidAreaDefaultX;
+				gamePanel.obj[i].solidArea.y = gamePanel.obj[i].solidAreaDefaultY;
+			}
+			
+		}
+		
+		return index;
+	}
 }
