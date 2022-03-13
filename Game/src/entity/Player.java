@@ -121,20 +121,38 @@ public class Player extends Entity{
 			}
 	}
 	
+	// how player reacts to objects
 	public void pickUpObject(int i) {
 		if(i != 999) {
 			String objectName = gamePanel.obj[i].name;
 			
 			switch (objectName) {
 			case "Key":
+				gamePanel.playSE(1);
 				hasKey++;
 				gamePanel.obj[i] = null;
+				gamePanel.ui.showMessage("Picked up a key!");
 				break;
 			case "Door":
 				if(hasKey > 0) {
+					gamePanel.playSE(8);
 					gamePanel.obj[i] = null;
 					hasKey--;
+					gamePanel.ui.showMessage("Unlocked a door!");
+				} else {
+					gamePanel.ui.showMessage("Key required!");
 				}
+				break;
+			case "Boots":
+				gamePanel.playSE(6);
+				speed += 2;
+				gamePanel.obj[i] = null;
+				gamePanel.ui.showMessage("Speed it is!");
+				break;
+			case "Chest":
+				gamePanel.ui.gameFinished = true;
+				gamePanel.stopMusic();
+				gamePanel.playSE(3);
 				break;
 			}
 		}
