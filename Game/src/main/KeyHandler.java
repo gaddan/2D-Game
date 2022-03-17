@@ -8,6 +8,12 @@ public class KeyHandler implements KeyListener {
 	private boolean upPressed, downPressed, leftPressed, rightPressed;
 	// debugging
 	public boolean checkDrawTime;
+	
+	GamePanel gamePanel;
+	
+	public KeyHandler(GamePanel gamePanel) {
+		this.gamePanel = gamePanel;
+	}
 
 	@Override
 	public void keyTyped(KeyEvent e) {
@@ -26,6 +32,12 @@ public class KeyHandler implements KeyListener {
 			setLeftPressed(true);
 		} else if (code == KeyEvent.VK_D) {
 			setRightPressed(true);
+		} else if (code == KeyEvent.VK_ESCAPE) {
+			if(gamePanel.gameState == gamePanel.playState) {
+				gamePanel.gameState = gamePanel.pauseState;
+			} else if(gamePanel.gameState == gamePanel.pauseState) {
+				gamePanel.gameState = gamePanel.playState;
+			}
 		} else if (code == KeyEvent.VK_T) {
 			if(checkDrawTime == false) {
 				checkDrawTime = true;

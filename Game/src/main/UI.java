@@ -10,8 +10,9 @@ import object.OBJ_Key;
 public class UI {
 
 	GamePanel gamePanel;
+	Graphics2D g2;
 	Font arial_40, arial_80B;
-	BufferedImage keyImage;
+	//BufferedImage keyImage;
 	public boolean messageOn = false;
 	public String message = "";
 	int messageCounter = 0;
@@ -21,57 +22,35 @@ public class UI {
 		this.gamePanel = gamePanel;
 		arial_40 = new Font("Arial", Font.PLAIN, 40); // instantiate font so not in game loop
 		arial_80B = new Font("Arial", Font.BOLD, 80);
-		OBJ_Key key = new OBJ_Key(gamePanel);
-		keyImage = key.image;
+		//OBJ_Key key = new OBJ_Key(gamePanel);
+		//keyImage = key.image;
 	}
 	
 	public void draw(Graphics2D g2) {
 		
-		if(gameFinished == true) {
-			
-			g2.setFont(arial_40);
-			g2.setColor(Color.WHITE);
-			
-			String text;
-			int textLenght;
-			int x;
-			int y;
-			
-			text = "You found the treasure!";
-			textLenght = (int)g2.getFontMetrics().getStringBounds(text, g2).getWidth(); // length of text
-			
-			x = gamePanel.screenWidth/2 - textLenght/2;
-			y = gamePanel.screenWidth/2 - gamePanel.tileSize*3;
-			g2.drawString(text, x, y);
-			
-			g2.setFont(arial_80B);
-			g2.setColor(Color.YELLOW);
-			text = "Congratulations!";
-			textLenght = (int)g2.getFontMetrics().getStringBounds(text, g2).getWidth();
-			x = gamePanel.screenWidth/2 - textLenght/2;
-			y = gamePanel.screenWidth/2 + gamePanel.tileSize*2;
-			g2.drawString(text, x, y);
-			
-			gamePanel.gameThread = null;
-			
-		}else {
+		this.g2 = g2;
+		g2.setFont(arial_40);
+		g2.setColor(Color.WHITE);
 		
-			g2.setFont(arial_40);
-			g2.setColor(Color.WHITE);
-			g2.drawImage(keyImage, gamePanel.tileSize/2, gamePanel.tileSize/2, gamePanel.tileSize, gamePanel.tileSize, null);
-			g2.drawString("x " + gamePanel.player.hasKey, 74, 65);
-			
-			if(messageOn == true) {
-				g2.drawString(message, gamePanel.tileSize/2, gamePanel.tileSize*5);
-				
-				messageCounter++;
-				
-				if(messageCounter > 120) { // 120 frames -> 60f/s -> 2s until disappearing
-					messageCounter = 0;
-					messageOn = false;
-				}
-			}
+		if(gamePanel.gameState == gamePanel.playState) {
+			// play state stuff
+		} else if(gamePanel.gameState == gamePanel.pauseState) {
+			drawPauseScreen();
 		}
+	}
+	
+	public void drawPauseScreen() {
+		String text = "Paused";
+		int x = getXCenterText(text);
+		int y = gamePanel.screenHeight/2;
+		
+		g2.drawString(text, x, y);
+	}
+	
+	public int getXCenterText(String text) {
+		int length = (int)g2.getFontMetrics().getStringBounds(text, g2).getWidth();
+		int x = gamePanel.screenWidth/2 - length/2;
+		return x;
 	}
 	
 	public void showMessage(String text) {
