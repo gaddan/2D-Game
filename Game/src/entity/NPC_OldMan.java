@@ -20,6 +20,7 @@ public class NPC_OldMan extends Entity{
 		speed = 1;
 		
 		getNPCImage();
+		setDialogue();
 	}
 	
 	public void getNPCImage() {
@@ -52,6 +53,12 @@ public class NPC_OldMan extends Entity{
 		return image;
 	}
 	
+	public void setDialogue() {
+		dialogues[0] = "Good day!";
+		dialogues[1] = "What a nice day it is today. \nDon't you think?";
+		dialogues[2] = "Well, good luck to you!";
+	}
+	
 	public void setAction() { // super simple AI for npc
 		actionLockCounter++;
 		if (actionLockCounter == 120) {
@@ -69,6 +76,9 @@ public class NPC_OldMan extends Entity{
 			}
 			actionLockCounter = 0;
 		}
-
+	}
+	
+	public void speak() {
+		super.speak(); // since same for every npc, can be called from Entity
 	}
 }

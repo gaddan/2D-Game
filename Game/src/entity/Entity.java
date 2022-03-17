@@ -20,6 +20,8 @@ public class Entity {
 	public boolean collisionOn = false;
 	private String lastDirection;
 	public int actionLockCounter;
+	String dialogues[] = new String[20];
+	public int dialogueIndex = 0;
 	
 	public Entity(GamePanel gamePanel) {
 		this.gamePanel = gamePanel;
@@ -27,6 +29,30 @@ public class Entity {
 	
 	public void setAction() { // unique for entities
 		
+	}
+	
+	public void speak() {
+		if(dialogues[dialogueIndex] == null) {
+			dialogueIndex = 0;
+		}
+		gamePanel.ui.currentDialogue = dialogues[dialogueIndex];
+		dialogueIndex++;
+		
+		// face player when talking
+		switch(gamePanel.player.direction) {
+		case "up":
+			direction = "down";
+			break;
+		case "down":
+			direction = "up";
+			break;
+		case "left":
+			direction = "right";
+			break;
+		case "right":
+			direction = "left";
+			break;
+		}
 	}
 	
 	public void update() { // same for all entities

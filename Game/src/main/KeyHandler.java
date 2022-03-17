@@ -5,7 +5,7 @@ import java.awt.event.KeyListener;
 
 public class KeyHandler implements KeyListener {
 	
-	private boolean upPressed, downPressed, leftPressed, rightPressed;
+	public boolean upPressed, downPressed, leftPressed, rightPressed, enterPressed;
 	// debugging
 	public boolean checkDrawTime;
 	
@@ -24,25 +24,40 @@ public class KeyHandler implements KeyListener {
 	public void keyPressed(KeyEvent e) {
 		int code = e.getKeyCode();
 		
-		if(code == KeyEvent.VK_W) {
-			setUpPressed(true);
-		} else if (code == KeyEvent.VK_S) {
-			setDownPressed(true);
-		} else if (code == KeyEvent.VK_A) {
-			setLeftPressed(true);
-		} else if (code == KeyEvent.VK_D) {
-			setRightPressed(true);
-		} else if (code == KeyEvent.VK_ESCAPE) {
-			if(gamePanel.gameState == gamePanel.playState) {
+		// play state
+		if(gamePanel.gameState == gamePanel.gameState) {
+			if(code == KeyEvent.VK_W) {
+				setUpPressed(true);
+			} else if (code == KeyEvent.VK_S) {
+				setDownPressed(true);
+			} else if (code == KeyEvent.VK_A) {
+				setLeftPressed(true);
+			} else if (code == KeyEvent.VK_D) {
+				setRightPressed(true);
+			} else if (code == KeyEvent.VK_ESCAPE) {
 				gamePanel.gameState = gamePanel.pauseState;
-			} else if(gamePanel.gameState == gamePanel.pauseState) {
+			} else if (code == KeyEvent.VK_ENTER) {
+				enterPressed = true;
+			} else if (code == KeyEvent.VK_T) {
+				if(checkDrawTime == false) {
+					checkDrawTime = true;
+				} else {
+					checkDrawTime = false;
+				}
+			}			
+		}
+		
+		// pause state
+		if(gamePanel.gameState == gamePanel.pauseState) {
+			if (code == KeyEvent.VK_ESCAPE) {
 				gamePanel.gameState = gamePanel.playState;
 			}
-		} else if (code == KeyEvent.VK_T) {
-			if(checkDrawTime == false) {
-				checkDrawTime = true;
-			} else {
-				checkDrawTime = false;
+		}
+		
+		// dialogue state
+		if(gamePanel.gameState == gamePanel.dialogueState) {
+			if (code == KeyEvent.VK_ENTER) {
+				gamePanel.gameState = gamePanel.playState;
 			}
 		}
 		
