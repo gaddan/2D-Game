@@ -21,7 +21,7 @@ public class UI {
 		this.gamePanel = gamePanel;
 		arial_40 = new Font("Arial", Font.PLAIN, 40); // instantiate font so not in game loop
 		arial_80B = new Font("Arial", Font.BOLD, 80);
-		OBJ_Key key = new OBJ_Key();
+		OBJ_Key key = new OBJ_Key(gamePanel);
 		keyImage = key.image;
 	}
 	

@@ -7,6 +7,8 @@ import java.io.IOException;
 import javax.imageio.ImageIO;
 import main.GamePanel;
 import main.KeyHandler;
+import main.UtilityTool;
+import tile.Tile;
 
 public class Player extends Entity{
 	
@@ -17,6 +19,7 @@ public class Player extends Entity{
 	public final int screenX;
 	public final int screenY;
 	public int hasKey = 0;
+	BufferedImage sprite = null;
 	
 	public Player(GamePanel gamePanel, KeyHandler keyH) {
 		
@@ -45,22 +48,33 @@ public class Player extends Entity{
 	}
 	
 	public void getPlayerImage() {
-		BufferedImage sprite = null;
+		loadSprite();
+		idleDown = setUp(0, 0);
+		down1 = setUp(16, 0);
+		down2 = setUp(32, 0);
+		idleUp = setUp(48, 0);
+		up1 = setUp(64, 0);
+		up2 = setUp(80, 0);
+		right1 = setUp(96, 0);
+		right2 = setUp(112, 0);
+		left1 = setUp(128, 0);
+		left2 = setUp(144, 0);
+	}
+	
+	public void loadSprite() {
 		try {
 			sprite = ImageIO.read(getClass().getResourceAsStream("/player/player_sprite_sheet.png"));
-		}catch (IOException e) {
+		} catch (IOException e) {
 			e.printStackTrace();
 		}
-		idleDown = sprite.getSubimage(0,0,16,16);
-		down1 = sprite.getSubimage(16,0,16,16);
-		down2 = sprite.getSubimage(32,0,16,16);
-		idleUp = sprite.getSubimage(48,0,16,16);
-		up1 = sprite.getSubimage(64,0,16,16);
-		up2 = sprite.getSubimage(80,0,16,16);
-		right1 = sprite.getSubimage(96,0,16,16);
-		right2 = sprite.getSubimage(112,0,16,16);
-		left1 = sprite.getSubimage(128,0,16,16);
-		left2 = sprite.getSubimage(144,0,16,16);
+	}
+	
+	public BufferedImage setUp(int x, int y) {
+		UtilityTool uTool = new UtilityTool();
+		BufferedImage image = null;
+		image = sprite.getSubimage(x, y, 16, 16);
+		image = uTool.scaledImage(image, gamePanel.tileSize, gamePanel.tileSize);
+		return image;
 	}
 	
 	public void update() {
@@ -203,7 +217,7 @@ public class Player extends Entity{
 			image = right1;
 			break;
 		}
-		g2.drawImage(image, screenX, screenY, gamePanel.tileSize, gamePanel.tileSize, null);
+		g2.drawImage(image, screenX, screenY, null);
 	}
 	
 }

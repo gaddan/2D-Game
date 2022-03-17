@@ -25,6 +25,7 @@ public class GamePanel extends JPanel implements Runnable{
 	
 	// FPS for the game
 	int FPS = 60;
+	long currentFPS = 0; 
 	
 	// World settings
 	public final int maxWorldCol = 50;
@@ -73,16 +74,25 @@ public class GamePanel extends JPanel implements Runnable{
 		double delta = 0;
 		long lastTime = System.nanoTime();
 		long currentTime;
-		
+		long FPSTimer = 0;
+		long FPSdrawCount = 0;
+
 		while(gameThread != null) {
 			
 			currentTime = System.nanoTime();
 			delta += (currentTime - lastTime) / drawInterval;
+			FPSTimer += (currentTime - lastTime);
 			lastTime = currentTime;
 			if(delta >= 1) {
 				update();
 				repaint();
 				delta--;
+				FPSdrawCount++;
+			}
+			if(FPSTimer >= 1000000000) {
+				currentFPS = FPSdrawCount;
+				FPSdrawCount = 0;
+				FPSTimer = 0;
 			}
 			
 		}
@@ -94,10 +104,14 @@ public class GamePanel extends JPanel implements Runnable{
 	}
 
 	public void paintComponent(Graphics g) {
-		
 		super.paintComponent(g);
-		
 		Graphics2D g2 = (Graphics2D)g;
+		
+		// debugging
+		long drawStart = 0;
+		if(keyH.checkDrawTime == true) {
+			drawStart = System.nanoTime();
+		}
 		
 		// draw tiles
 		tileM.draw(g2);
@@ -114,6 +128,19 @@ public class GamePanel extends JPanel implements Runnable{
 		
 		// overlay
 		ui.draw(g2);
+		
+		
+		// debugging
+		if(keyH.checkDrawTime) {
+			long drawEnd = System.nanoTime();
+			long passed = drawEnd - drawStart;
+			g2.setColor(Color.WHITE);
+			g2.drawString("Draw time: " + passed, 10, 400);
+			g2.drawString("FPS: " + currentFPS, 10, 370);
+			System.out.println(passed);
+		}
+
+		
 		g2.dispose();
 	}
 	
