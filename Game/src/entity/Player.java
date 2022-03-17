@@ -12,18 +12,17 @@ import tile.Tile;
 
 public class Player extends Entity{
 	
-	GamePanel gamePanel;
 	KeyHandler keyH;
 	String lastDirection;
 	
 	public final int screenX;
 	public final int screenY;
-	//public int hasKey = 0;
 	BufferedImage sprite = null;
 	
 	public Player(GamePanel gamePanel, KeyHandler keyH) {
 		
-		this.gamePanel = gamePanel;
+		super(gamePanel);
+
 		this.keyH = keyH;
 		
 		// first part gets to top left corner, not exact middle, hence -part
@@ -105,6 +104,10 @@ public class Player extends Entity{
 			int objIndex = gamePanel.cChecker.checkObject(this, true);
 			pickUpObject(objIndex);
 			
+			// cbeck npc collision
+			int npcIndex = gamePanel.cChecker.checkEntity(this, gamePanel.npc);
+			interactNPC(npcIndex);
+			
 			if(collisionOn == false) {
 				switch(direction) {
 				case "up":
@@ -139,6 +142,12 @@ public class Player extends Entity{
 	public void pickUpObject(int i) {
 		if(i != 999) {
 			
+		}
+	}
+	
+	public void interactNPC(int i) {
+		if(i != 999) {
+			System.out.println("hitting npc..");
 		}
 	}
 	
