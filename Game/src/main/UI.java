@@ -3,8 +3,11 @@ package main;
 import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Font;
+import java.awt.FontFormatException;
 import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
+import java.io.IOException;
+import java.io.InputStream;
 
 import object.OBJ_Key;
 
@@ -12,25 +15,33 @@ public class UI {
 
 	GamePanel gamePanel;
 	Graphics2D g2;
-	Font arial_40, arial_80B;
+	Font smallPixelFont;
 	public boolean messageOn = false;
 	public String message = "";
 	int messageCounter = 0;
 	public boolean gameFinished = false;
 	public String currentDialogue = "";
+	public int commandNum = 0;
 	
 	public UI(GamePanel gamePanel) {
 		this.gamePanel = gamePanel;
-		arial_40 = new Font("Arial", Font.PLAIN, 40); // instantiate font so not in game loop
-		arial_80B = new Font("Arial", Font.BOLD, 80);
+		InputStream is = getClass().getResourceAsStream("/font/small_pixel.ttf");
+		try {
+			smallPixelFont = Font.createFont(Font.TRUETYPE_FONT, is);
+		} catch (FontFormatException | IOException e) {
+			e.printStackTrace();
+		}
 	}
 	
 	public void draw(Graphics2D g2) {
 		
 		this.g2 = g2;
-		g2.setFont(arial_40);
+		g2.setFont(smallPixelFont);
 		g2.setColor(Color.WHITE);
 		
+		if(gamePanel.gameState == gamePanel.titleState) {
+			drawTitleScreen();
+		}
 		
 		if(gamePanel.gameState == gamePanel.playState) { // play state
 			
@@ -38,6 +49,48 @@ public class UI {
 			drawPauseScreen();
 		} else if (gamePanel.gameState == gamePanel.dialogueState) { // dialogue state
 			drawDialogueScreen();
+		}
+	}
+	
+	public void drawTitleScreen() {
+		// title
+		g2.setFont(g2.getFont().deriveFont(Font.BOLD, 60F));
+		String text = "Adventure Game";
+		int x = getXCenterText(text);
+		int y = gamePanel.tileSize*3;
+		g2.setColor(Color.GRAY); // shadow effect
+		g2.drawString(text, x+5, y+5); // shadow effect
+		g2.setColor(Color.WHITE);
+		g2.drawString(text, x, y);
+		
+		// menu
+		g2.setFont(g2.getFont().deriveFont(Font.BOLD, 35F));
+		
+		text = "New Game";
+		x = getXCenterText(text);
+		y += gamePanel.tileSize*3;
+		g2.drawString(text, x, y);
+		if(commandNum == 0) {
+			g2.drawString(">", getXMarkerLeftSide(text), y);
+			g2.drawString("<", getXMarkerRightSide(text), y);
+		}
+		
+		text = "Load Game";
+		x = getXCenterText(text);
+		y += gamePanel.tileSize;
+		g2.drawString(text, x, y);
+		if(commandNum == 1) {
+			g2.drawString(">", getXMarkerLeftSide(text), y);
+			g2.drawString("<", getXMarkerRightSide(text), y);
+		}
+		
+		text = "Quit";
+		x = getXCenterText(text);
+		y += gamePanel.tileSize;
+		g2.drawString(text, x, y);
+		if(commandNum == 2) {
+			g2.drawString(">", getXMarkerLeftSide(text), y);
+			g2.drawString("<", getXMarkerRightSide(text), y);
 		}
 	}
 	
@@ -84,6 +137,14 @@ public class UI {
 		int length = (int)g2.getFontMetrics().getStringBounds(text, g2).getWidth();
 		int x = gamePanel.screenWidth/2 - length/2;
 		return x;
+	}
+	
+	public int getXMarkerRightSide(String text) {
+		 return getXCenterText(text) + (int)g2.getFontMetrics().getStringBounds(text, g2).getWidth() + gamePanel.tileSize;
+	}
+	
+	public int getXMarkerLeftSide(String text) {
+		 return getXCenterText(text) - gamePanel.tileSize;
 	}
 	
 	public void showMessage(String text) {

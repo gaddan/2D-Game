@@ -49,6 +49,7 @@ public class GamePanel extends JPanel implements Runnable{
 	
 	// game state
 	public int gameState;
+	public final int titleState = 0;
 	public final int playState = 1;
 	public final int pauseState = 2;
 	public final int dialogueState = 3;
@@ -68,8 +69,8 @@ public class GamePanel extends JPanel implements Runnable{
 	public void setupGame() {
 		aSetter.setObject();
 		aSetter.setNPC();
-		playMusic(0); // background music loop
-		gameState = playState;
+		//playMusic(0); // background music loop, start in keyhandler instead
+		gameState = titleState;
 	}
 
 	public void startGameThread() {
@@ -134,29 +135,34 @@ public class GamePanel extends JPanel implements Runnable{
 			drawStart = System.nanoTime();
 		}
 		
-		// draw tiles
-		tileM.draw(g2);
-		
-		// draw objects
-		for(int i = 0; i < obj.length; i++) {
-			if(obj[i] != null) {
-				obj[i].draw(g2, this);
+		// title state
+		if(gameState == titleState) {
+			ui.draw(g2);
+		} else { // continue main game
+			
+			// draw tiles
+			tileM.draw(g2);
+			
+			// draw objects
+			for(int i = 0; i < obj.length; i++) {
+				if(obj[i] != null) {
+					obj[i].draw(g2, this);
+				}
 			}
-		}
-		
-		// draw npcs
-		for(int i = 0; i < npc.length; i++){
-			if(npc[i] != null) {
-				npc[i].draw(g2, this);
+			
+			// draw npcs
+			for(int i = 0; i < npc.length; i++){
+				if(npc[i] != null) {
+					npc[i].draw(g2, this);
+				}
 			}
+			
+			// draw player
+			player.draw(g2);
+			
+			// overlay
+			ui.draw(g2);
 		}
-		
-		// draw player
-		player.draw(g2);
-		
-		// overlay
-		ui.draw(g2);
-		
 		
 		// debugging
 		if(keyH.checkDrawTime) {
