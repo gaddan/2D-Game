@@ -44,6 +44,9 @@ public class Player extends Entity{
 		worldY = gamePanel.tileSize * 21;
 		speed = 4;
 		direction = "down";
+		// status
+		maxLife = 6;
+		life = maxLife;
 	}
 	
 	public void getPlayerImage() {
@@ -108,6 +111,12 @@ public class Player extends Entity{
 			int npcIndex = gamePanel.cChecker.checkEntity(this, gamePanel.npc);
 			interactNPC(npcIndex);
 			
+			// check events
+			gamePanel.eventH.checkEvent();
+			
+			gamePanel.keyH.enterPressed = false;
+			
+			
 			if(collisionOn == false) {
 				switch(direction) {
 				case "up":
@@ -152,7 +161,6 @@ public class Player extends Entity{
 			gamePanel.npc[i].speak();		
 			}
 		}
-		gamePanel.keyH.enterPressed = false;
 	}
 	
 	public void draw(Graphics2D g2) {

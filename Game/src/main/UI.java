@@ -9,13 +9,18 @@ import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.io.InputStream;
 
+import javax.print.attribute.HashPrintRequestAttributeSet;
+
+import object.OBJ_Heart;
 import object.OBJ_Key;
+import object.SuperObject;
 
 public class UI {
 
 	GamePanel gamePanel;
 	Graphics2D g2;
 	Font smallPixelFont;
+	BufferedImage heart_full, heart_half, heart_empty;
 	public boolean messageOn = false;
 	public String message = "";
 	int messageCounter = 0;
@@ -31,6 +36,12 @@ public class UI {
 		} catch (FontFormatException | IOException e) {
 			e.printStackTrace();
 		}
+		
+		// creating HUD object
+		SuperObject heart = new OBJ_Heart(gamePanel);
+		heart_full = heart.image;
+		heart_half = heart.image2;
+		heart_empty = heart.image3;
 	}
 	
 	public void draw(Graphics2D g2) {
@@ -39,17 +50,50 @@ public class UI {
 		g2.setFont(smallPixelFont);
 		g2.setColor(Color.WHITE);
 		
+		// title state
 		if(gamePanel.gameState == gamePanel.titleState) {
 			drawTitleScreen();
 		}
 		
+		// play state
 		if(gamePanel.gameState == gamePanel.playState) { // play state
-			
+			drawPlayerLife();
+		// pause state
 		} else if(gamePanel.gameState == gamePanel.pauseState) { // pause state
 			drawPauseScreen();
+			drawPlayerLife();
+		// dialogue state
 		} else if (gamePanel.gameState == gamePanel.dialogueState) { // dialogue state
 			drawDialogueScreen();
+			drawPlayerLife();
 		}
+	}
+	
+	public void drawPlayerLife() {
+		int x = gamePanel.tileSize/4;
+		int y = gamePanel.tileSize/4;
+		int i = 0;
+		
+		// draws max life
+		while(i < gamePanel.player.maxLife/2) {
+			g2.drawImage(heart_empty, x, y, null);
+			i++;
+			x += gamePanel.tileSize + gamePanel.tileSize/4;
+		}
+		
+		x = gamePanel.tileSize/4;
+		y = gamePanel.tileSize/4;
+		i = 0;
+		while(i < gamePanel.player.life) {
+			g2.drawImage(heart_half, x, y, null);
+			i++;
+			if(i < gamePanel.player.life) {
+				g2.drawImage(heart_full, x, y, null);
+			}
+			i++;
+			x += gamePanel.tileSize + gamePanel.tileSize/4;
+		}
+		
 	}
 	
 	public void drawTitleScreen() {
