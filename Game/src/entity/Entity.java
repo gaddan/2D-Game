@@ -4,9 +4,7 @@ import java.awt.Graphics2D;
 import java.awt.Rectangle;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
-
 import javax.imageio.ImageIO;
-
 import main.GamePanel;
 import main.UtilityTool;
 
@@ -29,10 +27,14 @@ public class Entity {
 	public BufferedImage image, image2, image3;
 	public String name;
 	public boolean collision = false;
+	public boolean invincible = false;
+	public int invincibleCounter = 0;
+	public int type; // 0 = player, 1 = npc, 2 = monster
 	
 	// sprites
 	BufferedImage npcSprite = null;
 	BufferedImage objSprite = null;
+	BufferedImage monSprite = null;
 	
 	// character status
 	public int maxLife;
@@ -77,7 +79,16 @@ public class Entity {
 		collisionOn = false;
 		gamePanel.cChecker.checkTile(this);
 		gamePanel.cChecker.checkObject(this, false);
-		gamePanel.cChecker.checkPlayer(this);
+		boolean touchPlayer = gamePanel.cChecker.checkPlayer(this);
+		gamePanel.cChecker.checkEntity(this, gamePanel.mon);
+		gamePanel.cChecker.checkEntity(this, gamePanel.npc);
+		
+		if(this.type == 2 && touchPlayer) {
+			if(!gamePanel.player.invincible) {
+				gamePanel.player.life -= 1;
+				gamePanel.player.invincible = true;
+			}
+		}
 		
 		if(collisionOn == false) {
 			switch(direction) {
@@ -101,7 +112,7 @@ public class Entity {
 		}
 	}
 	
-	public void draw(Graphics2D g2, GamePanel gamePanel) {
+	public void draw(Graphics2D g2) {
 		int screenX = worldX - gamePanel.player.worldX + gamePanel.player.screenX;
 		int screenY = worldY - gamePanel.player.worldY + gamePanel.player.screenY;
 		BufferedImage image = null;
@@ -163,10 +174,17 @@ public class Entity {
 		case "npc": {
 			image = npcSprite.getSubimage(x, y, 16, 16);
 			image = uTool.scaledImage(image, gamePanel.tileSize, gamePanel.tileSize);
+			break;
 		}
 		case "obj":{
 			image = objSprite.getSubimage(x, y, 16, 16);
 			image = uTool.scaledImage(image, gamePanel.tileSize, gamePanel.tileSize);
+			break;
+		}
+		case "mon":{
+			image = monSprite.getSubimage(x, y, 16, 16);
+			image = uTool.scaledImage(image, gamePanel.tileSize, gamePanel.tileSize);
+			break;
 		}
 		}
 		return image;
@@ -176,6 +194,7 @@ public class Entity {
 		try {
 			npcSprite = ImageIO.read(getClass().getResourceAsStream("/npc/npc_sprite_sheet.png"));
 			objSprite = ImageIO.read(getClass().getResourceAsStream("/objects/objects_sprite_sheet.png"));
+			monSprite = ImageIO.read(getClass().getResourceAsStream("/monster/monster_sprite_sheet.png"));
 		} catch (IOException e) {
 			e.printStackTrace();
 		}

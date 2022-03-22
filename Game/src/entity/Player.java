@@ -1,5 +1,7 @@
 package entity;
 
+import java.awt.AlphaComposite;
+import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.Rectangle;
 import java.awt.image.BufferedImage;
@@ -111,11 +113,14 @@ public class Player extends Entity{
 			int npcIndex = gamePanel.cChecker.checkEntity(this, gamePanel.npc);
 			interactNPC(npcIndex);
 			
+			// check monster collision
+			int monsterIndex = gamePanel.cChecker.checkEntity(this, gamePanel.mon);
+			touchMonster(monsterIndex);
+			
 			// check events
 			gamePanel.eventH.checkEvent();
 			
 			gamePanel.keyH.enterPressed = false;
-			
 			
 			if(collisionOn == false) {
 				switch(direction) {
@@ -145,6 +150,14 @@ public class Player extends Entity{
 				}
 				spriteCounter = 0;
 			}
+			
+			if(invincible) {
+				invincibleCounter++;
+				if(invincibleCounter > 45) {
+					invincible = false;
+					invincibleCounter = 0;
+				}
+			}
 	}
 	
 	// how player reacts to objects
@@ -160,6 +173,16 @@ public class Player extends Entity{
 			gamePanel.gameState = gamePanel.dialogueState;
 			gamePanel.npc[i].speak();		
 			}
+		}
+	}
+	
+	public void touchMonster(int i) {
+		if(i != 999) {
+			if(!invincible) {
+				life -= 1;
+				invincible = true;
+			}
+			
 		}
 	}
 	
@@ -208,7 +231,15 @@ public class Player extends Entity{
 			image = right1;
 			break;
 		}
+		
+		// the next draw does it with 30% transparency
+		if(invincible) {
+			g2.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 0.4f));
+		}
+		
 		g2.drawImage(image, screenX, screenY, null);
+		
+		g2.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 1f));
 	}
 	
 }
