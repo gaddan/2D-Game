@@ -29,12 +29,13 @@ public class Entity {
 	public boolean collision = false;
 	public boolean invincible = false;
 	public int invincibleCounter = 0;
-	public int type; // 0 = player, 1 = npc, 2 = monster
+	public int type; // 0 = player, 1 = npc, 2 = monster, 3 = mob
 	
 	// sprites
 	BufferedImage npcSprite = null;
 	BufferedImage objSprite = null;
 	BufferedImage monSprite = null;
+	BufferedImage mobSprite = null;
 	
 	// character status
 	public int maxLife;
@@ -82,6 +83,7 @@ public class Entity {
 		boolean touchPlayer = gamePanel.cChecker.checkPlayer(this);
 		gamePanel.cChecker.checkEntity(this, gamePanel.mon);
 		gamePanel.cChecker.checkEntity(this, gamePanel.npc);
+		gamePanel.cChecker.checkEntity(this, gamePanel.mob);
 		
 		if(this.type == 2 && touchPlayer) {
 			if(!gamePanel.player.invincible) {
@@ -186,6 +188,11 @@ public class Entity {
 			image = uTool.scaledImage(image, gamePanel.tileSize, gamePanel.tileSize);
 			break;
 		}
+		case "mob":{
+			image = mobSprite.getSubimage(x, y, 16, 16);
+			image = uTool.scaledImage(image, gamePanel.tileSize, gamePanel.tileSize);
+			break;
+		}
 		}
 		return image;
 	}
@@ -195,6 +202,7 @@ public class Entity {
 			npcSprite = ImageIO.read(getClass().getResourceAsStream("/npc/npc_sprite_sheet.png"));
 			objSprite = ImageIO.read(getClass().getResourceAsStream("/objects/objects_sprite_sheet.png"));
 			monSprite = ImageIO.read(getClass().getResourceAsStream("/monster/monster_sprite_sheet.png"));
+			mobSprite = ImageIO.read(getClass().getResourceAsStream("/mob/mob_sprite_sheet.png"));
 		} catch (IOException e) {
 			e.printStackTrace();
 		}

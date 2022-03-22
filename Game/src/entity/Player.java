@@ -117,6 +117,10 @@ public class Player extends Entity{
 			int monsterIndex = gamePanel.cChecker.checkEntity(this, gamePanel.mon);
 			touchMonster(monsterIndex);
 			
+			// check monster collision
+			int mobIndex = gamePanel.cChecker.checkEntity(this, gamePanel.mob);
+			touchMob(mobIndex);
+			
 			// check events
 			gamePanel.eventH.checkEvent();
 			
@@ -158,6 +162,12 @@ public class Player extends Entity{
 					invincibleCounter = 0;
 				}
 			}
+	}
+	
+	public void touchMob(int i) {
+		if(i != 999) {
+			
+		}
 	}
 	
 	// how player reacts to objects
