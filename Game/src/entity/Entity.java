@@ -3,8 +3,12 @@ package entity;
 import java.awt.Graphics2D;
 import java.awt.Rectangle;
 import java.awt.image.BufferedImage;
+import java.io.IOException;
+
+import javax.imageio.ImageIO;
 
 import main.GamePanel;
+import main.UtilityTool;
 
 public class Entity {
 
@@ -12,7 +16,7 @@ public class Entity {
 	public int worldX, worldY;
 	public int speed;
 	public BufferedImage up1, up2, down1, down2, left1, left2, right1, right2, idleDown, idleUp;
-	public String direction;
+	public String direction = "down";
 	public int spriteCounter = 0;
 	public int spriteNum = 1;
 	public Rectangle solidArea = new Rectangle(0, 0, 48, 48);
@@ -22,6 +26,13 @@ public class Entity {
 	public int actionLockCounter;
 	String dialogues[] = new String[20];
 	public int dialogueIndex = 0;
+	public BufferedImage image, image2, image3;
+	public String name;
+	public boolean collision = false;
+	
+	// sprites
+	BufferedImage npcSprite = null;
+	BufferedImage objSprite = null;
 	
 	// character status
 	public int maxLife;
@@ -29,6 +40,7 @@ public class Entity {
 	
 	public Entity(GamePanel gamePanel) {
 		this.gamePanel = gamePanel;
+		loadSprite();
 	}
 	
 	public void setAction() { // unique for entities
@@ -141,6 +153,31 @@ public class Entity {
 				break;
 			}
 			g2.drawImage(image, screenX, screenY, gamePanel.tileSize, gamePanel.tileSize, null);
+		}
+	}
+	
+	public BufferedImage setUp(int x, int y, String selector) {
+		UtilityTool uTool = new UtilityTool();
+		BufferedImage image = null;
+		switch (selector) {
+		case "npc": {
+			image = npcSprite.getSubimage(x, y, 16, 16);
+			image = uTool.scaledImage(image, gamePanel.tileSize, gamePanel.tileSize);
+		}
+		case "obj":{
+			image = objSprite.getSubimage(x, y, 16, 16);
+			image = uTool.scaledImage(image, gamePanel.tileSize, gamePanel.tileSize);
+		}
+		}
+		return image;
+	}
+	
+	public void loadSprite() {
+		try {
+			npcSprite = ImageIO.read(getClass().getResourceAsStream("/npc/npc_sprite_sheet.png"));
+			objSprite = ImageIO.read(getClass().getResourceAsStream("/objects/objects_sprite_sheet.png"));
+		} catch (IOException e) {
+			e.printStackTrace();
 		}
 	}
 }

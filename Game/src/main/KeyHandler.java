@@ -49,7 +49,7 @@ public class KeyHandler implements KeyListener {
 		}
 		
 		// play state
-		if(gamePanel.gameState == gamePanel.gameState) {
+		if(gamePanel.gameState == gamePanel.playState || gamePanel.gameState == gamePanel.pauseState || gamePanel.gameState == gamePanel.dialogueState) {
 			if(code == KeyEvent.VK_W) {
 				setUpPressed(true);
 			} else if (code == KeyEvent.VK_S) {
@@ -59,8 +59,15 @@ public class KeyHandler implements KeyListener {
 			} else if (code == KeyEvent.VK_D) {
 				setRightPressed(true);
 			} else if (code == KeyEvent.VK_ESCAPE) {
-				gamePanel.gameState = gamePanel.pauseState;
+				if(gamePanel.gameState == gamePanel.playState) {
+					gamePanel.gameState = gamePanel.pauseState;
+				} else if(gamePanel.gameState == gamePanel.pauseState) {
+					gamePanel.gameState = gamePanel.playState;
+				}
 			} else if (code == KeyEvent.VK_ENTER) {
+				if(gamePanel.gameState == gamePanel.dialogueState) {
+						gamePanel.gameState = gamePanel.playState;
+				}
 				enterPressed = true;
 			} else if (code == KeyEvent.VK_T) {
 				if(checkDrawTime == false) {
@@ -69,20 +76,6 @@ public class KeyHandler implements KeyListener {
 					checkDrawTime = false;
 				}
 			}			
-		}
-		
-		// pause state
-		if(gamePanel.gameState == gamePanel.pauseState) {
-			if (code == KeyEvent.VK_ESCAPE) {
-				gamePanel.gameState = gamePanel.playState;
-			}
-		}
-		
-		// dialogue state
-		if(gamePanel.gameState == gamePanel.dialogueState) {
-			if (code == KeyEvent.VK_ENTER) {
-				gamePanel.gameState = gamePanel.playState;
-			}
 		}
 		
 	}

@@ -2,14 +2,17 @@ package main;
 
 import java.awt.Color;
 import java.awt.Dimension;
+import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 
 import javax.swing.JPanel;
 
 import entity.Entity;
 import entity.Player;
-import object.SuperObject;
 import tile.TileManager;
 
 @SuppressWarnings("serial")
@@ -45,8 +48,9 @@ public class GamePanel extends JPanel implements Runnable{
 	
 	// Entity and object
 	public Player player = new Player(this, keyH);
-	public SuperObject obj[] = new SuperObject[10];
+	public Entity obj[] = new Entity[10];
 	public Entity npc[] = new Entity[10];
+	ArrayList<Entity> entityList = new ArrayList<>();
 	
 	// game state
 	public int gameState;
@@ -143,23 +147,36 @@ public class GamePanel extends JPanel implements Runnable{
 			
 			// draw tiles
 			tileM.draw(g2);
-			
-			// draw objects
+
+			// add entities to the list
+			entityList.add(player);
+			for(int i = 0; i < npc.length; i++) {
+				if(npc[i] != null) {
+					entityList.add(npc[i]);
+				}
+			}
 			for(int i = 0; i < obj.length; i++) {
 				if(obj[i] != null) {
-					obj[i].draw(g2, this);
+					entityList.add(obj[i]);
 				}
 			}
 			
-			// draw npcs
-			for(int i = 0; i < npc.length; i++){
-				if(npc[i] != null) {
-					npc[i].draw(g2, this);
+			// sorting entities
+			Collections.sort(entityList, new Comparator<Entity>() {
+				// comparing entities on y value
+				@Override
+				public int compare(Entity e1, Entity e2) {
+					int result = Integer.compare(e1.worldY, e2.worldY);
+					return result;
 				}
-			}
+			});
 			
-			// draw player
-			player.draw(g2);
+			
+			// drawing all entities
+			for(int i = 0; i < entityList.size(); i++) {
+				entityList.get(i).draw(g2, this);
+			}
+			entityList.clear();
 			
 			// overlay
 			ui.draw(g2);
@@ -170,9 +187,16 @@ public class GamePanel extends JPanel implements Runnable{
 			long drawEnd = System.nanoTime();
 			long passed = drawEnd - drawStart;
 			g2.setColor(Color.WHITE);
+			g2.setFont(g2.getFont().deriveFont(Font.BOLD, 15F));
 			g2.drawString("Draw time: " + passed, 10, 400);
-			g2.drawString("FPS: " + currentFPS, 10, 370);
-			System.out.println(passed);
+			g2.drawString("FPS: " + currentFPS, 10, 420);
+			// position
+			int x = player.worldX/tileSize;
+			int y = player.worldY/tileSize;
+			g2.drawString("X: " + x, 10, 440);
+			g2.drawString("Y: " + y, 10, 460);
+			// current state
+			g2.drawString("State: " + gameState, 10, 480);
 		}
 
 		

@@ -8,12 +8,9 @@ import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.io.InputStream;
-
-import javax.print.attribute.HashPrintRequestAttributeSet;
-
+import entity.Entity;
 import object.OBJ_Heart;
 import object.OBJ_Key;
-import object.SuperObject;
 
 public class UI {
 
@@ -38,7 +35,7 @@ public class UI {
 		}
 		
 		// creating HUD object
-		SuperObject heart = new OBJ_Heart(gamePanel);
+		Entity heart = new OBJ_Heart(gamePanel);
 		heart_full = heart.image;
 		heart_half = heart.image2;
 		heart_empty = heart.image3;
@@ -140,9 +137,9 @@ public class UI {
 	
 	public void drawPauseScreen() {
 		String text = "Paused";
+		g2.setFont(g2.getFont().deriveFont(Font.PLAIN, 24F));
 		int x = getXCenterText(text);
 		int y = gamePanel.screenHeight/2;
-		
 		g2.drawString(text, x, y);
 	}
 	
