@@ -7,7 +7,7 @@ public class KeyHandler implements KeyListener {
 	
 	public boolean upPressed, downPressed, leftPressed, rightPressed, enterPressed, spacePressed;
 	// debugging
-	public boolean checkDrawTime;
+	public boolean debugMode;
 	
 	GamePanel gamePanel;
 	
@@ -60,10 +60,10 @@ public class KeyHandler implements KeyListener {
 			} else if (code == KeyEvent.VK_D) {
 				setRightPressed(true);
 			} else if (code == KeyEvent.VK_T) {
-				if(checkDrawTime == false) {
-					checkDrawTime = true;
+				if(debugMode == false) {
+					debugMode = true;
 				} else {
-					checkDrawTime = false;
+					debugMode = false;
 				}
 			} else if (code == KeyEvent.VK_ESCAPE) {
 				gamePanel.gameState = gamePanel.pauseState;
@@ -71,6 +71,8 @@ public class KeyHandler implements KeyListener {
 				setEnterPressed(true);
 			} else if (code == KeyEvent.VK_SPACE) {
 				setSpacePressed(true);
+			} else if (code == KeyEvent.VK_R) {
+				gamePanel.tileM.loadMap("/maps/world1.txt");
 			}
 		}
 		
