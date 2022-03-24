@@ -20,6 +20,7 @@ public class Player extends Entity{
 	public final int screenX;
 	public final int screenY;
 	BufferedImage sprite = null;
+	int seCounter = 0;
 	
 	public Player(GamePanel gamePanel, KeyHandler keyH) {
 		
@@ -110,6 +111,10 @@ public class Player extends Entity{
 		
 		if(keyH.isSpacePressed()) {
 			attacking = true;
+			if(seCounter == 0) {
+				gamePanel.playSE(10);
+				seCounter++;
+			}
 		}
 		
 		if(attacking) {
@@ -239,6 +244,7 @@ public class Player extends Entity{
 			spriteNum = 1;
 			spriteCounter = 0;
 			attacking = false;
+			seCounter = 0;
 			keyH.setSpacePressed(false);
 		}
 		
@@ -260,8 +266,8 @@ public class Player extends Entity{
 	public void interactNPC(int i) {
 		if(i != 999) {
 			if(keyH.isEnterPressed()) {
-			gamePanel.gameState = gamePanel.dialogueState;
-			gamePanel.npc[i].speak();		
+				gamePanel.gameState = gamePanel.dialogueState;
+				gamePanel.npc[i].speak();		
 			}
 		}
 		keyH.setEnterPressed(false);
@@ -270,6 +276,7 @@ public class Player extends Entity{
 	public void touchMonster(int i) {
 		if(i != 999) {
 			if(!invincible) {
+				gamePanel.playSE(7);
 				life -= 1;
 				invincible = true;
 			}	
@@ -279,10 +286,12 @@ public class Player extends Entity{
 	public void damageMonster(int i) {
 		if(i != 999) {
 			if(!gamePanel.mon[i].invincible) {
+				gamePanel.playSE(11);
 				gamePanel.mon[i].life -= 1;
 				gamePanel.mon[i].invincible = true;
+				gamePanel.mon[i].damageReaction();
 				if(gamePanel.mon[i].life <= 0) {
-					gamePanel.mon[i] = null;
+					gamePanel.mon[i].dying = true;
 				}
 				
 			}

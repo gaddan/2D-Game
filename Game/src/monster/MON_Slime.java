@@ -14,12 +14,15 @@ public class MON_Slime extends Entity {
 	
 	BufferedImage sprite = null;
 	
+	GamePanel gamePanel;
+	
 	public MON_Slime(GamePanel gamePanel) {
 		super(gamePanel);
+		this.gamePanel = gamePanel;
 		type = 2;
 		name = "Slime";
 		speed = 1;
-		maxLife = 4;
+		maxLife = 2;
 		life = maxLife;
 		
 		solidArea.x = 3;
@@ -61,5 +64,10 @@ public class MON_Slime extends Entity {
 			}
 			actionLockCounter = 0;
 		}
+	}
+	
+	public void damageReaction() {
+		actionLockCounter = 0;
+		direction = gamePanel.player.direction;
 	}
 }

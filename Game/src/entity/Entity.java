@@ -1,6 +1,7 @@
 package entity;
 
 import java.awt.AlphaComposite;
+import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.Rectangle;
 import java.awt.image.BufferedImage;
@@ -34,6 +35,11 @@ public class Entity {
 	public int invincibleCounter = 0;
 	public int type; // 0 = player, 1 = npc, 2 = monster, 3 = mob
 	boolean attacking = false;
+	public boolean alive = true;
+	public boolean dying = false;
+	int dyingCounter = 0;
+	public boolean hpBarOn = false;
+	public int hpBarCounter = 0;
 	
 	// sprites
 	BufferedImage npcSprite = null;
@@ -50,9 +56,9 @@ public class Entity {
 		loadSprite();
 	}
 	
-	public void setAction() { // unique for entities
-		
-	}
+	public void setAction() {}// unique for entities
+	
+	public void damageReaction() {}
 	
 	public void speak() {
 		if(dialogues[dialogueIndex] == null) {
@@ -167,15 +173,64 @@ public class Entity {
 				break;
 			}
 			
+			// monster health bar
+			if(type == 2 && hpBarOn) {
+				double oneScale = (double)gamePanel.tileSize / maxLife;
+				double hpBarValue = oneScale*life;
+				g2.setColor(new Color(255, 0, 30));
+				changeAlpha(g2, 0.4f);
+				g2.fillRect(screenX, screenY - 15, gamePanel.tileSize, 10);
+				changeAlpha(g2, 1f);
+				
+				
+				g2.setColor(new Color(255, 0, 30));
+				g2.fillRect(screenX, screenY - 15, (int)hpBarValue, 10);
+				
+				hpBarCounter++;
+				if(hpBarCounter > 300) {
+					hpBarCounter = 0;
+					hpBarOn = false;
+				}
+			}
+			
+			
 			// the next draw does it with 30% transparency
 			if(invincible) {
-				g2.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 0.4f));
+				hpBarOn = true;
+				hpBarCounter = 0; // continue displaying hp bar
+				changeAlpha(g2, 0.4f);
+			}
+			if(dying) {
+				dyingAnimationBlink(g2);
 			}
 			
 			g2.drawImage(image, screenX, screenY, gamePanel.tileSize, gamePanel.tileSize, null);
 			
-			g2.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 1f));
+			changeAlpha(g2, 1f);
 		}
+	}
+	
+	// blinking effect when monster dies
+	public void dyingAnimationBlink(Graphics2D g2) {
+		dyingCounter++;
+		int i = 5;
+		if(dyingCounter < i) { changeAlpha(g2, 0f); }
+		if(dyingCounter > i && dyingCounter <= i*2) { changeAlpha(g2, 1f); }
+		if(dyingCounter > i*2 && dyingCounter <= i*3) { changeAlpha(g2, 0f); }
+		if(dyingCounter > i*3 && dyingCounter <= i*4) {changeAlpha(g2, 1f); }
+		if(dyingCounter > i*4 && dyingCounter <= i*5) { changeAlpha(g2, 0f); }
+		if(dyingCounter > i*5 && dyingCounter <= i*6) { changeAlpha(g2, 1f); }
+		if(dyingCounter > i*6 && dyingCounter <= i*7) { changeAlpha(g2, 0f); }
+		if(dyingCounter > i*7 && dyingCounter <= i*8) { changeAlpha(g2, 1f); }
+		if(dyingCounter > i*8) {
+			dying = false;
+			alive = false;			
+		}
+
+	}
+	
+	public void changeAlpha(Graphics2D g2, float alpha) {
+		g2.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, alpha));
 	}
 	
 	public BufferedImage setUp(int x, int y, String selector) {
