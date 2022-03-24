@@ -45,6 +45,7 @@ public class MON_Slime extends Entity {
 		right2 = setUp(16, 0, "mon");
 		left1 = setUp(0, 0, "mon");
 		left2 = setUp(16, 0, "mon");
+		extra = setUp(32, 0, "mon");
 	}
 	
 	public void setAction() { // super simple AI for slime

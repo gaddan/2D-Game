@@ -9,6 +9,8 @@ import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.io.InputStream;
 import entity.Entity;
+import entity.NPC_Flower;
+import entity.Player;
 import object.OBJ_Heart;
 import object.OBJ_Key;
 
@@ -18,6 +20,7 @@ public class UI {
 	Graphics2D g2;
 	Font smallPixelFont;
 	BufferedImage heart_full, heart_half, heart_empty;
+	BufferedImage flower_face;
 	public boolean messageOn = false;
 	public String message = "";
 	int messageCounter = 0;
@@ -39,6 +42,9 @@ public class UI {
 		heart_full = heart.image;
 		heart_half = heart.image2;
 		heart_empty = heart.image3;
+		
+		Entity flower = new NPC_Flower(gamePanel);
+		flower_face = flower.dialogueFace;
 	}
 	
 	public void draw(Graphics2D g2) {
@@ -63,6 +69,8 @@ public class UI {
 		} else if (gamePanel.gameState == gamePanel.dialogueState) { // dialogue state
 			drawDialogueScreen();
 			drawPlayerLife();
+		} else if (gamePanel.gameState == gamePanel.minigameState) {
+			
 		}
 	}
 	
@@ -152,8 +160,18 @@ public class UI {
 		
 		drawSubWindow(x, y, width, height);
 		
-		x += gamePanel.tileSize;
-		y += gamePanel.tileSize;
+		// TODO prob fix better implementation for this
+		int npcIndex = gamePanel.cChecker.checkEntity(gamePanel.player, gamePanel.npc);
+		if(gamePanel.npc[npcIndex].name == "Flower") {
+			int faceHeight = ((y + height/2) - gamePanel.tileSize);
+			g2.drawImage(flower_face, null, x+30, faceHeight);
+			x += gamePanel.tileSize*3;
+			y += gamePanel.tileSize;
+		} else {
+			x += gamePanel.tileSize;
+			y += gamePanel.tileSize;
+		}
+		
 		g2.setFont(g2.getFont().deriveFont(Font.PLAIN, 24F));
 		for(String line : currentDialogue.split("\n")) {
 			g2.drawString(line, x, y);
@@ -163,7 +181,7 @@ public class UI {
 	}
 	
 	public void drawSubWindow(int x, int y, int w, int h) {
-		Color c = new Color(0,0,0, 180);
+		Color c = new Color(0, 0, 0, 255);
 		g2.setColor(c);
 		g2.fillRoundRect(x, y, w, h, 35, 35);
 		

@@ -21,7 +21,7 @@ public class TileManager {
 	
 	public TileManager(GamePanel gamePanel) {
 		this.gamePanel = gamePanel;
-		tile = new Tile[10];
+		tile = new Tile[50];
 		mapTileNum = new int[gamePanel.maxWorldCol][gamePanel.maxWorldRow];
 		getTileImage();
 		loadMap("/maps/world1.txt");
@@ -30,11 +30,26 @@ public class TileManager {
 	public void getTileImage() {
 		loadSprite();
 		setUp(0, 0, 0, false); // grass
-		setUp(1, 32, 0, true); // wall
+		setUp(1, 32, 0, true); // water windy
 		setUp(2, 48, 0, true); // water
 		setUp(3, 64, 0, true); // tree
 		setUp(4, 80, 0, false); // sand
 		setUp(5, 96, 0, false); // dirt
+		
+		// grasses
+		setUp(6, 0, 32, true); // up
+		setUp(7, 16, 32, true); // down
+		setUp(8, 32, 32, true); // right
+		setUp(9, 48, 32, true); // left
+		setUp(10, 64, 32, true); // left corner
+		setUp(11, 80, 32, true); // L bottom corner
+		setUp(12, 96, 32, true); // right corner
+		setUp(13, 112, 32, true); // R bottom corner
+		setUp(14, 128, 32, true); // top L edge
+		setUp(15, 144, 32, true); // top R edge
+		setUp(16, 128, 16, true); // bottom R edge
+		setUp(17, 144, 16, true); // bottom L edge
+		setUp(18, 48, 16, false); // improved grass
 	}
 	
 	public void loadSprite() {

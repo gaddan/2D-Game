@@ -15,7 +15,7 @@ public class Entity {
 	GamePanel gamePanel;
 	public int worldX, worldY;
 	public int speed;
-	public BufferedImage up1, up2, down1, down2, left1, left2, right1, right2, idleDown, idleUp;
+	public BufferedImage up1, up2, down1, down2, left1, left2, right1, right2, idleDown, idleUp, extra;
 	public BufferedImage attackUp1, attackUp2, attackDown1, attackDown2, attackLeft1, attackLeft2, attackRight1, attackRight2;
 	public String direction = "down";
 	public int spriteCounter = 0;
@@ -29,6 +29,7 @@ public class Entity {
 	String dialogues[] = new String[20];
 	public int dialogueIndex = 0;
 	public BufferedImage image, image2, image3;
+	public BufferedImage dialogueFace;
 	public String name;
 	public boolean collision = false;
 	public boolean invincible = false;
@@ -117,7 +118,13 @@ public class Entity {
 		if(spriteCounter > 12) {
 			if(spriteNum == 1) {
 				spriteNum = 2;
-			} else if(spriteNum == 2) {
+			}else if(spriteNum == 2) {
+				if(name == "Slime") {
+					spriteNum = 3;
+				} else {
+					spriteNum = 1;
+				}
+			}else if(spriteNum == 3) {
 				spriteNum = 1;
 			}
 			spriteCounter = 0;
@@ -146,18 +153,22 @@ public class Entity {
 			case "up":
 				if(spriteNum == 1) { image = up1; } 
 				if(spriteNum == 2) { image = up2; }
+				if(spriteNum == 3) { image = extra; }
 				break;
 			case "down":
 				if(spriteNum == 1) { image = down1; } 
 				if(spriteNum == 2) { image = down2;	}
+				if(spriteNum == 3) { image = extra; }
 				break;
 			case "left":
 				if(spriteNum == 1) { image = left1; }
 				if(spriteNum == 2) { image = left2;	}
+				if(spriteNum == 3) { image = extra; }
 				break;
 			case "right":
 				if(spriteNum == 1) { image = right1; } 
 				if(spriteNum == 2) { image = right2; }
+				if(spriteNum == 3) { image = extra; }
 				break;
 			case "idleUp":
 				image = idleUp;
