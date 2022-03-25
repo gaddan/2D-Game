@@ -15,7 +15,7 @@ public class MouseHandler implements MouseListener{
 
 	@Override
 	public void mouseClicked(MouseEvent e) {
-		if(gamePanel.gameState == gamePanel.minigameState) {
+		if(gamePanel.gameState == gamePanel.minigameState && gamePanel.currentMinigame == "tictactoe") {
 	        for(Rectangle index : gamePanel.ui.ttt.keySet()) {
 	        	// player attempts
 	        	if(index.contains(e.getPoint()) && !gamePanel.ui.ttt.get(index).equals("player") 
@@ -41,6 +41,26 @@ public class MouseHandler implements MouseListener{
 	    	        gamePanel.ui.flowerMoves++;
 	        	}
 	        }
+		}
+		
+		if(gamePanel.gameState == gamePanel.minigameState && gamePanel.currentMinigame == "digit") {
+			if(gamePanel.ui.one.contains(e.getPoint())) {
+				gamePanel.ui.digitAttempt += "1";
+			}
+			if(gamePanel.ui.zero.contains(e.getPoint())) {
+				gamePanel.ui.digitAttempt += "0";
+			}
+			if(gamePanel.ui.submit.contains(e.getPoint())) {
+				if(gamePanel.ui.digitAttempt.equals("110111")) {
+					gamePanel.player.digitComplete = true;
+				} else {
+					gamePanel.ui.digitAttempt = "";
+				}
+			}
+			if(gamePanel.ui.digitAttempt.length() > 6) {
+				gamePanel.ui.digitAttempt = "";
+			}
+			
 		}
 		
 	}

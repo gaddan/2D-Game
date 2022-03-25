@@ -56,6 +56,8 @@ public class GamePanel extends JPanel implements Runnable{
 	public Entity mob[] = new Entity[20];
 	ArrayList<Entity> entityList = new ArrayList<>();
 	
+	public String currentMinigame = "";
+	
 	// game state
 	public int gameState;
 	public final int titleState = 0;
@@ -119,9 +121,7 @@ public class GamePanel extends JPanel implements Runnable{
 				FPSdrawCount = 0;
 				FPSTimer = 0;
 			}
-			
 		}
-		
 	}
 	
 	public void update() {

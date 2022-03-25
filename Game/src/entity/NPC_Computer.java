@@ -67,9 +67,25 @@ public class NPC_Computer extends Entity{
 	
 	public void speak() {
 		if(dialogues[dialogueIndex] == null) {
+			if(!gamePanel.player.digitComplete) {
+				gamePanel.gameState = gamePanel.minigameState;
+				gamePanel.currentMinigame = "digit";
+				gamePanel.stopMusic();
+				gamePanel.playMusic(12);
+			}
 			dialogueIndex = 0;
 		}
-		gamePanel.ui.currentDialogue = dialogues[dialogueIndex];
-		dialogueIndex++;
+		if(!gamePanel.player.digitComplete) {
+			gamePanel.ui.currentDialogue = dialogues[dialogueIndex];
+			dialogueIndex++;
+		} else {
+			gamePanel.gameState = gamePanel.dialogueState;
+			gamePanel.ui.currentDialogue = "bop... Thanks! beep..";
+		}
+	}
+	
+	public void updateNPCImage() {
+		down1 = setUp(64, 16);
+		down2 = setUp(80, 16);
 	}
 }

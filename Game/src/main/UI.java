@@ -44,6 +44,8 @@ public class UI {
 	public int flowerMoves = 0;
 	public LinkedList<Rectangle> movesPlayer = new LinkedList<Rectangle>();
 	public LinkedList<Rectangle> movesFlower = new LinkedList<Rectangle>();
+	public Rectangle one, zero, submit;
+	public String digitAttempt = "";
 	
 	public UI(GamePanel gamePanel) {
 		this.gamePanel = gamePanel;
@@ -88,13 +90,15 @@ public class UI {
 		} else if (gamePanel.gameState == gamePanel.dialogueState) { // dialogue state
 			drawDialogueScreen();
 			drawPlayerLife();
-		} else if (gamePanel.gameState == gamePanel.minigameState) {
+		} else if (gamePanel.gameState == gamePanel.minigameState && gamePanel.currentMinigame == "tictactoe") {
 			if(setUpStage) {
 				setUpTicTacToe();
 				setUpStage = false;
 			}
 			drawTicTacToe();
 			//drawPlayerLife();
+		} else if(gamePanel.gameState == gamePanel.minigameState && gamePanel.currentMinigame == "digit") {
+			drawDigitMinigame();
 		}
 	}
 	
@@ -235,6 +239,7 @@ public class UI {
         // TODO its prob super bad that this get called 60x per sec..
         if(tttPlayerWin()) {
         	gamePanel.gameState = gamePanel.playState;
+        	gamePanel.currentMinigame = "";
         	gamePanel.stopMusic();
         	gamePanel.playMusic(0);
         	gamePanel.player.tttWon = true;
@@ -243,6 +248,9 @@ public class UI {
         } else if(tttFlowerWin()) {
         	setUpStage = true;
         	gamePanel.gameState = gamePanel.playState;
+        	gamePanel.currentMinigame = "";
+        	gamePanel.stopMusic();
+        	gamePanel.playMusic(0);
         }
 	}
 	
@@ -309,6 +317,37 @@ public class UI {
                 ttt.put(cell, "");
             }
         }
+	}
+	
+	public void drawDigitMinigame() {
+		Color c = new Color(0, 0, 0, 255);
+		g2.setColor(c);
+		g2.fillRect(0, 0, gamePanel.screenWidth, gamePanel.screenHeight);
+		g2.drawImage(computer_face, null, (gamePanel.screenWidth/2)-computer_face.getWidth()/2, gamePanel.tileSize);
+		g2.setColor(Color.WHITE);
+		
+		one = new Rectangle(gamePanel.tileSize*7, gamePanel.tileSize*8, gamePanel.tileSize, gamePanel.tileSize);
+		zero = new Rectangle(gamePanel.tileSize*8, gamePanel.tileSize*8, gamePanel.tileSize, gamePanel.tileSize);
+		submit = new Rectangle(gamePanel.tileSize*9, gamePanel.tileSize*8, gamePanel.tileSize, gamePanel.tileSize);
+		
+		g2.draw(one);
+		g2.draw(zero);
+		g2.draw(submit);
+		
+		g2.setFont(g2.getFont().deriveFont(Font.PLAIN, 15F));
+		g2.drawString(digitAttempt, gamePanel.tileSize*8, (gamePanel.tileSize*8)-50);
+		
+		
+		g2.setColor(Color.BLACK);
+		g2.drawString("1", gamePanel.tileSize+20, gamePanel.tileSize+20);
+		g2.drawString("0", gamePanel.tileSize*3+20, gamePanel.tileSize+20);
+		if(gamePanel.player.digitComplete) {
+			gamePanel.npc[2].updateNPCImage();
+			gamePanel.currentMinigame = "";
+			gamePanel.gameState = gamePanel.playState;
+        	gamePanel.stopMusic();
+        	gamePanel.playMusic(0);
+		}
 	}
 	
 	public void drawSubWindow(int x, int y, int w, int h) {

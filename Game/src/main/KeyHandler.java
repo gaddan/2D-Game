@@ -95,6 +95,9 @@ public class KeyHandler implements KeyListener {
 			if (code == KeyEvent.VK_ESCAPE) {
 					gamePanel.gameState = gamePanel.playState;
 					gamePanel.ui.setUpStage = true;
+					gamePanel.currentMinigame = "";
+		        	gamePanel.stopMusic();
+		        	gamePanel.playMusic(0);
 			}
 		}
 		

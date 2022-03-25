@@ -283,4 +283,9 @@ public class Entity {
 			e.printStackTrace();
 		}
 	}
+
+	public void updateNPCImage() {
+		// TODO Auto-generated method stub
+		
+	}
 }
