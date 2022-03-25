@@ -64,28 +64,19 @@ public class NPC_Flower extends Entity{
 		dialogues[2] = "I'll let you pass,\nif you win!!";
 	}
 	
-	/*
-	public void setAction() { // super simple AI for npc
-		actionLockCounter++;
-		if (actionLockCounter == 120) {
-			Random random = new Random();
-			int i = random.nextInt(100)+1; // random num 1-100
-			
-			if(i <= 25) {
-				direction = "up";
-			} else if (25 < i && i <= 50) {
-				direction = "down";
-			} else if (50 < i && i <= 75) {
-				direction = "left";
-			} else if (75 < i && i <= 100) {
-				direction = "right";
-			}
-			actionLockCounter = 0;
-		}
-	}
-	*/
-	
 	public void speak() {
-		super.speak(); // since same for every npc, can be called from Entity
+		if(dialogues[dialogueIndex] == null) {
+			if(!gamePanel.player.tttWon) {
+				gamePanel.gameState = gamePanel.minigameState;
+			}
+			dialogueIndex = 0;
+		}
+		if(!gamePanel.player.tttWon) {
+			gamePanel.ui.currentDialogue = dialogues[dialogueIndex];
+			dialogueIndex++;
+		} else {
+			gamePanel.gameState = gamePanel.dialogueState;
+			gamePanel.ui.currentDialogue = "Ourgh, you won..";
+		}
 	}
 }

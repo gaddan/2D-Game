@@ -5,9 +5,13 @@ import java.awt.Color;
 import java.awt.Font;
 import java.awt.FontFormatException;
 import java.awt.Graphics2D;
+import java.awt.Rectangle;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.HashMap;
+import java.util.LinkedList;
+
 import entity.Entity;
 import entity.NPC_Flower;
 import entity.Player;
@@ -27,6 +31,17 @@ public class UI {
 	public boolean gameFinished = false;
 	public String currentDialogue = "";
 	public int commandNum = 0;
+	public int tttHeight = 0;
+	public int tttWidth = 0;
+	public int tttX = 0;
+	public int tttY = 0;
+	public HashMap<Rectangle, String> ttt = new HashMap<Rectangle, String>();
+	public boolean setUpStage = true;
+	public boolean playerMoved = false;
+	public int playerMoves = 0;
+	public int flowerMoves = 0;
+	public LinkedList<Rectangle> movesPlayer = new LinkedList<Rectangle>();
+	public LinkedList<Rectangle> movesFlower = new LinkedList<Rectangle>();
 	
 	public UI(GamePanel gamePanel) {
 		this.gamePanel = gamePanel;
@@ -70,7 +85,12 @@ public class UI {
 			drawDialogueScreen();
 			drawPlayerLife();
 		} else if (gamePanel.gameState == gamePanel.minigameState) {
-			
+			if(setUpStage) {
+				setUpTicTacToe();
+				setUpStage = false;
+			}
+			drawTicTacToe();
+			drawPlayerLife();
 		}
 	}
 	
@@ -178,6 +198,92 @@ public class UI {
 			y += 40;
 		}
 		
+	}
+	
+	public void drawTicTacToe() {
+		// window for tictactoe minigame
+		drawSubWindow(tttX, tttY, tttWidth, tttHeight);
+		g2.drawLine(tttX+(tttWidth/3), tttY+2, tttX+(tttWidth/3), tttY+tttHeight-2);
+		g2.drawLine(tttX+((tttWidth/3)*2), tttY+2, tttX+((tttWidth/3)*2), tttY+tttHeight-2);
+		g2.drawLine(tttX+2, tttY+(tttHeight/3), tttX+tttWidth-2, tttY+(tttHeight/3));
+		g2.drawLine(tttX+2, tttY+((tttHeight/3)*2), tttX+tttWidth-2, tttY+((tttHeight/3)*2));
+        for(Rectangle index : ttt.keySet()) {
+        	if(ttt.get(index).equals("player")) {
+        		g2.setFont(g2.getFont().deriveFont(Font.PLAIN, 15F));
+        		g2.drawString("player", index.x, index.y + (index.height/2));
+        	}
+        	if(ttt.get(index).equals("flower")) {
+        		g2.setFont(g2.getFont().deriveFont(Font.PLAIN, 15F));
+        		g2.drawString("flower", index.x, index.y + (index.height/2));
+        	}
+        }
+        
+        // TODO its prob super bad that this get called 60x per sec..
+        if(tttPlayerWin()) {
+        	gamePanel.gameState = gamePanel.playState;
+        	gamePanel.player.tttWon = true;
+        } else if(tttFlowerWin()) {
+        	setUpStage = true;
+        	gamePanel.gameState = gamePanel.playState;
+        }
+	}
+	
+	private boolean tttPlayerWin() {
+        LinkedList<String> result = new LinkedList<>(ttt.values());
+        // rows
+        if(result.get(1) == "player" && result.get(4) == "player" && result.get(7) == "player") { return true; }
+        if(result.get(0) == "player" && result.get(3) == "player" && result.get(6) == "player") { return true; }
+        if(result.get(2) == "player" && result.get(5) == "player" && result.get(8) == "player") { return true; }
+        
+        // cols
+        if(result.get(7) == "player" && result.get(6) == "player" && result.get(2) == "player") { return true; }
+        if(result.get(1) == "player" && result.get(0) == "player" && result.get(5) == "player") { return true; }
+        if(result.get(4) == "player" && result.get(3) == "player" && result.get(8) == "player") { return true; }
+        
+        // diagonals
+        if(result.get(7) == "player" && result.get(0) == "player" && result.get(8) == "player") { return true; }
+        if(result.get(2) == "player" && result.get(0) == "player" && result.get(4) == "player") { return true; }
+        
+		return false;
+	}
+	
+	private boolean tttFlowerWin() {
+        LinkedList<String> result = new LinkedList<>(ttt.values());
+        // rows
+        if(result.get(1) == "flower" && result.get(4) == "flower" && result.get(7) == "flower") { return true; }
+        if(result.get(0) == "flower" && result.get(3) == "flower" && result.get(6) == "flower") { return true; }
+        if(result.get(2) == "flower" && result.get(5) == "flower" && result.get(8) == "flower") { return true; }
+        
+        // cols
+        if(result.get(7) == "flower" && result.get(6) == "flower" && result.get(2) == "flower") { return true; }
+        if(result.get(1) == "flower" && result.get(0) == "flower" && result.get(5) == "flower") { return true; }
+        if(result.get(4) == "flower" && result.get(3) == "flower" && result.get(8) == "flower") { return true; }
+        
+        // diagonals
+        if(result.get(7) == "flower" && result.get(0) == "flower" && result.get(8) == "flower") { return true; }
+        if(result.get(2) == "flower" && result.get(0) == "flower" && result.get(4) == "flower") { return true; }
+        
+		return false;
+	}
+
+	public void setUpTicTacToe() {
+		tttHeight = gamePanel.tileSize*5;
+		tttWidth = gamePanel.tileSize*5;
+		tttX = gamePanel.tileSize*5;
+		tttY = gamePanel.tileSize*5;
+        int w = gamePanel.ui.tttWidth;
+        int h = gamePanel.ui.tttHeight;
+        int posX = gamePanel.ui.tttX;
+        int posY = gamePanel.ui.tttY;
+        // setup
+        for (int col = 0; col < 3; col++) {
+            for (int row = 0; row < 3; row++) {
+                int x = posX + ((w / 3) * col);
+                int y = posY + ((h / 3) * row);
+                Rectangle cell = new Rectangle(x, y, w / 3, h / 3);
+                ttt.put(cell, "");
+            }
+        }
 	}
 	
 	public void drawSubWindow(int x, int y, int w, int h) {

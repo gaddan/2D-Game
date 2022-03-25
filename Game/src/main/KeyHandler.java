@@ -90,6 +90,13 @@ public class KeyHandler implements KeyListener {
 			}
 		}
 		
+		// minigame state
+		else if(gamePanel.gameState == gamePanel.minigameState) {
+			if (code == KeyEvent.VK_ESCAPE) {
+					gamePanel.gameState = gamePanel.playState;
+			}
+		}
+		
 	}
 
 	@Override

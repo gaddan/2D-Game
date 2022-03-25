@@ -21,6 +21,7 @@ public class Player extends Entity{
 	public final int screenY;
 	BufferedImage sprite = null;
 	int seCounter = 0;
+	public boolean tttWon = false;
 	
 	public Player(GamePanel gamePanel, KeyHandler keyH) {
 		
