@@ -41,6 +41,7 @@ public class Entity {
 	int dyingCounter = 0;
 	public boolean hpBarOn = false;
 	public int hpBarCounter = 0;
+	public int idleTimer = 12;
 	
 	// sprites
 	BufferedImage npcSprite = null;
@@ -115,7 +116,7 @@ public class Entity {
 		lastDirection = direction;
 		spriteCounter++;
 		
-		if(spriteCounter > 12) {
+		if(spriteCounter > idleTimer) {
 			if(spriteNum == 1) {
 				spriteNum = 2;
 			}else if(spriteNum == 2) {

@@ -49,7 +49,8 @@ public class GamePanel extends JPanel implements Runnable{
 	
 	// Entity and object
 	public Player player = new Player(this, keyH);
-	public Entity obj[] = new Entity[10];
+	ArrayList<Entity> obj = new ArrayList<Entity>();
+	//public Entity obj[] = new Entity[10];
 	public Entity npc[] = new Entity[10];
 	public Entity mon[] = new Entity[20];
 	public Entity mob[] = new Entity[20];
@@ -182,11 +183,16 @@ public class GamePanel extends JPanel implements Runnable{
 				}
 			}
 			
+			for (Entity e : obj) {
+				entityList.add(e);
+			}
+			/*
 			for(int i = 0; i < obj.length; i++) {
 				if(obj[i] != null) {
 					entityList.add(obj[i]);
 				}
 			}
+			*/
 			
 			for(int i = 0; i < mon.length; i++) {
 				if(mon[i] != null) {

@@ -23,7 +23,6 @@ public class MouseHandler implements MouseListener{
 	        		gamePanel.ui.ttt.put(index, "player");
 	        		gamePanel.ui.movesPlayer.add(index);
 	        		gamePanel.ui.playerMoved = true;
-	        		
 	    	        if(gamePanel.ui.playerMoves > 2) {
 	    	        	gamePanel.ui.ttt.put(gamePanel.ui.movesPlayer.removeFirst(), "");
 	    	        }

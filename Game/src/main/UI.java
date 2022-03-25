@@ -6,6 +6,7 @@ import java.awt.Font;
 import java.awt.FontFormatException;
 import java.awt.Graphics2D;
 import java.awt.Rectangle;
+import java.awt.color.ColorSpace;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.io.InputStream;
@@ -13,6 +14,7 @@ import java.util.HashMap;
 import java.util.LinkedList;
 
 import entity.Entity;
+import entity.NPC_Computer;
 import entity.NPC_Flower;
 import entity.Player;
 import object.OBJ_Heart;
@@ -24,7 +26,7 @@ public class UI {
 	Graphics2D g2;
 	Font smallPixelFont;
 	BufferedImage heart_full, heart_half, heart_empty;
-	BufferedImage flower_face;
+	BufferedImage flower_face, computer_face;
 	public boolean messageOn = false;
 	public String message = "";
 	int messageCounter = 0;
@@ -60,6 +62,8 @@ public class UI {
 		
 		Entity flower = new NPC_Flower(gamePanel);
 		flower_face = flower.dialogueFace;
+		Entity computer = new NPC_Computer(gamePanel);
+		computer_face = computer.dialogueFace;
 	}
 	
 	public void draw(Graphics2D g2) {
@@ -90,7 +94,7 @@ public class UI {
 				setUpStage = false;
 			}
 			drawTicTacToe();
-			drawPlayerLife();
+			//drawPlayerLife();
 		}
 	}
 	
@@ -187,6 +191,11 @@ public class UI {
 			g2.drawImage(flower_face, null, x+30, faceHeight);
 			x += gamePanel.tileSize*3;
 			y += gamePanel.tileSize;
+		} else if(gamePanel.npc[npcIndex].name == "Computer") {
+			int faceHeight = ((y + height/2) - gamePanel.tileSize);
+			g2.drawImage(computer_face, null, x+30, faceHeight);
+			x += gamePanel.tileSize*3;
+			y += gamePanel.tileSize;
 		} else {
 			x += gamePanel.tileSize;
 			y += gamePanel.tileSize;
@@ -201,8 +210,13 @@ public class UI {
 	}
 	
 	public void drawTicTacToe() {
+		Color c = new Color(0, 0, 0, 255);
+		g2.setColor(c);
+		g2.fillRoundRect(0, 0, gamePanel.screenWidth, gamePanel.screenHeight, 0, 0);
+		g2.drawImage(flower_face, null, (gamePanel.screenWidth/2)-flower_face.getWidth()/2, gamePanel.tileSize);
 		// window for tictactoe minigame
 		drawSubWindow(tttX, tttY, tttWidth, tttHeight);
+		g2.setColor(Color.WHITE);
 		g2.drawLine(tttX+(tttWidth/3), tttY+2, tttX+(tttWidth/3), tttY+tttHeight-2);
 		g2.drawLine(tttX+((tttWidth/3)*2), tttY+2, tttX+((tttWidth/3)*2), tttY+tttHeight-2);
 		g2.drawLine(tttX+2, tttY+(tttHeight/3), tttX+tttWidth-2, tttY+(tttHeight/3));
@@ -221,7 +235,11 @@ public class UI {
         // TODO its prob super bad that this get called 60x per sec..
         if(tttPlayerWin()) {
         	gamePanel.gameState = gamePanel.playState;
+        	gamePanel.stopMusic();
+        	gamePanel.playMusic(0);
         	gamePanel.player.tttWon = true;
+        	gamePanel.obj.remove(0);
+        	gamePanel.obj.remove(0);
         } else if(tttFlowerWin()) {
         	setUpStage = true;
         	gamePanel.gameState = gamePanel.playState;
@@ -267,10 +285,17 @@ public class UI {
 	}
 
 	public void setUpTicTacToe() {
+		/*
 		tttHeight = gamePanel.tileSize*5;
 		tttWidth = gamePanel.tileSize*5;
 		tttX = gamePanel.tileSize*5;
 		tttY = gamePanel.tileSize*5;
+		*/
+		// TODO buggar om man centrerar
+		tttHeight = gamePanel.tileSize*5;
+		tttWidth = gamePanel.tileSize*5;
+		tttX = (gamePanel.screenWidth/2)-(tttWidth/2);
+		tttY = (gamePanel.screenHeight/2)-(tttHeight/2);
         int w = gamePanel.ui.tttWidth;
         int h = gamePanel.ui.tttHeight;
         int posX = gamePanel.ui.tttX;
@@ -287,6 +312,7 @@ public class UI {
 	}
 	
 	public void drawSubWindow(int x, int y, int w, int h) {
+		// little rectangle
 		Color c = new Color(0, 0, 0, 255);
 		g2.setColor(c);
 		g2.fillRoundRect(x, y, w, h, 35, 35);

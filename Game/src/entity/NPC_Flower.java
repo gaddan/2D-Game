@@ -68,6 +68,8 @@ public class NPC_Flower extends Entity{
 		if(dialogues[dialogueIndex] == null) {
 			if(!gamePanel.player.tttWon) {
 				gamePanel.gameState = gamePanel.minigameState;
+				gamePanel.stopMusic();
+				gamePanel.playMusic(12);
 			}
 			dialogueIndex = 0;
 		}
