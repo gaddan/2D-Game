@@ -10,8 +10,10 @@ import java.awt.color.ColorSpace;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedList;
+import java.util.Random;
 
 import entity.Entity;
 import entity.NPC_Computer;
@@ -46,6 +48,8 @@ public class UI {
 	public LinkedList<Rectangle> movesFlower = new LinkedList<Rectangle>();
 	public Rectangle one, zero, submit;
 	public String digitAttempt = "";
+	public int digCounter = 0;
+	ArrayList<TripleValue> digits = new ArrayList<TripleValue>();
 	
 	public UI(GamePanel gamePanel) {
 		this.gamePanel = gamePanel;
@@ -338,17 +342,60 @@ public class UI {
 		g2.drawString(digitAttempt, gamePanel.tileSize*8, (gamePanel.tileSize*8)-50);
 		
 		
-		g2.setColor(Color.BLACK);
-		g2.drawString("1", gamePanel.tileSize+20, gamePanel.tileSize+20);
-		g2.drawString("0", gamePanel.tileSize*3+20, gamePanel.tileSize+20);
+		//g2.setColor(Color.BLACK);
+		g2.drawString("1", gamePanel.tileSize*7+(one.width/2)-5, gamePanel.tileSize*8+(one.height/2)-10);
+		g2.drawString("0", gamePanel.tileSize*8+(zero.width/2)-5, gamePanel.tileSize*8+(zero.height/2)-10);
+		g2.drawString("OK", gamePanel.tileSize*9+(submit.width/2)-10, gamePanel.tileSize*8+(submit.height/2)-10);
+		
+		digCounter++;
+		if(digCounter > 15) {
+			digits.clear();
+			for(int i = 0; i < 40; i++) {
+				digits.add(new TripleValue(RanBinNumber(), ranNumber(250), ranNumber(600)));
+				digits.add(new TripleValue(RanBinNumber(), ranNumber(250)+500, ranNumber(600)));
+			}
+			digCounter = 0;
+		}
+		
+		for(int i = 0; i < digits.size(); i++) {
+			g2.drawString(digits.get(i).bin, digits.get(i).x, digits.get(i).y);
+		}
+		
 		if(gamePanel.player.digitComplete) {
 			gamePanel.npc[2].updateNPCImage();
 			gamePanel.currentMinigame = "";
 			gamePanel.gameState = gamePanel.playState;
         	gamePanel.stopMusic();
         	gamePanel.playMusic(0);
+        	gamePanel.obj.remove(4);
+        	gamePanel.obj.remove(4);
 		}
 	}
+	
+	public String RanBinNumber() {
+	    Random rg = new Random();
+	    int n = rg.nextInt(64);
+	    return Integer.toBinaryString(n);
+	}
+	
+	public int ranNumber(int max) {
+	    Random rg = new Random();
+	    int n = rg.nextInt(max);
+	    return n;
+	}
+	
+	class TripleValue {
+	    int x;
+	    int y;
+	    String bin;
+
+	    public TripleValue(String bin,int x, int y) {
+	        this.x = x;
+	        this.y = y;
+	        this.bin = bin;
+	    }
+	}
+	
 	
 	public void drawSubWindow(int x, int y, int w, int h) {
 		// little rectangle

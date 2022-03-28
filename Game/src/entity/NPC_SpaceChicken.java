@@ -9,18 +9,17 @@ import javax.imageio.ImageIO;
 import main.GamePanel;
 import main.UtilityTool;
 
-public class NPC_Computer extends Entity{
+public class NPC_SpaceChicken extends Entity{
 	
 	BufferedImage sprite = null;
 	BufferedImage dialogue = null;
 
-	public NPC_Computer(GamePanel gamePanel) {
+	public NPC_SpaceChicken(GamePanel gamePanel) {
 		super(gamePanel);
-		name = "Computer";
+		name = "Chicken";
 		
 		direction = "down";
 		speed = 0;
-		idleTimer = 24;
 		
 		getNPCImage();
 		setDialogue();
@@ -28,9 +27,10 @@ public class NPC_Computer extends Entity{
 	
 	public void getNPCImage() {
 		loadSprite();
-		down1 = setUp(32, 16);
-		down2 = setUp(48, 16);
-		dialogueFace = setUpDialogue(32, 0);
+		down1 = setUp(96, 16);
+		down2 = setUp(112, 16);
+		
+		dialogueFace = setUpDialogue(0, 0);
 	}
 	
 	public void loadSprite() {
@@ -59,33 +59,27 @@ public class NPC_Computer extends Entity{
 	}
 	
 	public void setDialogue() {
-		dialogues[0] = "Beep...Boop...";
-		dialogues[1] = "Help a boop... robot\nout will you? beeep..";
-		dialogues[2] = "010101 011010 011000\n011011 011010 011100";
-		dialogues[3] = "I have lost a 6-digit\ncode somewhere.. :(";
+		dialogues[0] = "Hello there!";
+		dialogues[1] = "You wanna pass hmm?";
+		dialogues[2] = "I'll let you pass,\nif you win!!";
 	}
 	
 	public void speak() {
 		if(dialogues[dialogueIndex] == null) {
-			if(!gamePanel.player.digitComplete) {
+			if(!gamePanel.player.tttWon) {
 				gamePanel.gameState = gamePanel.minigameState;
-				gamePanel.currentMinigame = "digit";
+				gamePanel.currentMinigame = "tictactoe";
 				gamePanel.stopMusic();
 				gamePanel.playMusic(12);
 			}
 			dialogueIndex = 0;
 		}
-		if(!gamePanel.player.digitComplete) {
+		if(!gamePanel.player.tttWon) {
 			gamePanel.ui.currentDialogue = dialogues[dialogueIndex];
 			dialogueIndex++;
 		} else {
 			gamePanel.gameState = gamePanel.dialogueState;
-			gamePanel.ui.currentDialogue = "Thanks! I turned off\nthe deadly lasers.";
+			gamePanel.ui.currentDialogue = "Ourgh, you won..";
 		}
-	}
-	
-	public void updateNPCImage() {
-		down1 = setUp(64, 16);
-		down2 = setUp(80, 16);
 	}
 }
