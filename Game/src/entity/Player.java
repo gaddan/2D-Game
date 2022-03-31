@@ -23,6 +23,7 @@ public class Player extends Entity{
 	int seCounter = 0;
 	public boolean tttWon = false;
 	public boolean digitComplete = false;
+	public int keys = 0;
 	
 	public Player(GamePanel gamePanel, KeyHandler keyH) {
 		
@@ -261,7 +262,18 @@ public class Player extends Entity{
 	// how player reacts to objects
 	public void pickUpObject(int i) {
 		if(i != 999) {
-			
+			if(gamePanel.obj.get(i).name == "Key") {
+				keys++;
+				gamePanel.obj.remove(i);
+				gamePanel.playSE(1);
+				return;
+			}
+			if(gamePanel.obj.get(i).name == "Door" && keys > 0) {
+				keys--;
+				gamePanel.obj.remove(i);
+				gamePanel.playSE(8);
+				return;
+			}
 		}
 	}
 	
@@ -277,7 +289,7 @@ public class Player extends Entity{
 	
 	public void touchMonster(int i) {
 		if(i != 999) {
-			if(!invincible) {
+			if(!invincible && !gamePanel.mon[i].dying) {
 				gamePanel.playSE(7);
 				life -= 1;
 				invincible = true;

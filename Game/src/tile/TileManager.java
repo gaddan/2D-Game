@@ -29,7 +29,7 @@ public class TileManager {
 	
 	public void getTileImage() {
 		loadSprite();
-		setUp(0, 0, 0, false); // grass
+		setUp(0, 48, 16, false); // grass
 		setUp(1, 32, 0, true); // water windy
 		setUp(2, 48, 0, true); // water
 		setUp(3, 64, 0, true); // tree
@@ -49,7 +49,7 @@ public class TileManager {
 		setUp(15, 144, 32, true); // top R edge
 		setUp(16, 128, 16, true); // bottom R edge
 		setUp(17, 144, 16, true); // bottom L edge
-		setUp(18, 48, 16, false); // improved grass
+		//setUp(18, 48, 16, false); // improved grass
 	}
 	
 	public void loadSprite() {

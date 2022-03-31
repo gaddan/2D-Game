@@ -41,9 +41,12 @@ public class EventHandler {
 		}
 		
 		if(canTouchEvent) {
-			if(hit(27, 16, "any") == true) { damagePit(27, 16, gamePanel.dialogueState);}
-			if(hit(27, 15, "any") == true) { healingPool(27, 15, gamePanel.dialogueState);}
-			if(hit(27, 14, "any") == true) { teleportPlayer(27, 14, gamePanel.dialogueState);}			
+			//if(hit(27, 16, "any") == true) { damagePit(27, 16, gamePanel.dialogueState);}
+			//if(hit(24, 12, "any") == true) { healingPool(24, 12, gamePanel.dialogueState);}
+			//if(hit(27, 14, "any") == true) { teleportPlayer(27, 14, gamePanel.dialogueState);}
+			//if(hit(25, 38, "any") == true) { pickUpKey(25, 38, gamePanel.playState);}
+			//if(hit(39, 39, "any") == true) { pickUpKey(39, 39, gamePanel.playState);}
+			//if(hit(39, 8, "any") == true) { pickUpKey(39, 8, gamePanel.playState);}
 		}
 
 	}
@@ -82,7 +85,7 @@ public class EventHandler {
 	
 	public void healingPool(int col, int row, int gameState) {
 		gamePanel.gameState = gameState;
-		gamePanel.ui.currentDialogue = "The grace of the pool heals you..";
+		gamePanel.ui.currentDialogue = "The mere presence of/n the lake heals you..";
 		gamePanel.player.life = gamePanel.player.maxLife;
 	}
 	
@@ -92,4 +95,22 @@ public class EventHandler {
 		gamePanel.player.worldX = gamePanel.tileSize*37;
 		gamePanel.player.worldY = gamePanel.tileSize*10;
 	}
+	
+	public void pickUpKey(int col, int row, int gameState) {
+		gamePanel.gameState = gameState;
+		//gamePanel.ui.currentDialogue = "Found a key!";
+		//gamePanel.obj.get(gameState);
+		System.out.println(gamePanel.obj.size());
+		for(int i = 0; i < gamePanel.obj.size(); i++) {
+			if(gamePanel.obj.get(i).worldX == col*gamePanel.tileSize && gamePanel.obj.get(i).worldY == row*gamePanel.tileSize) {
+				gamePanel.obj.remove(i);
+				gamePanel.playSE(1);
+			}
+		}
+		eventRect[col][row].eventDone = true;
+		gamePanel.player.keys++;
+		//gamePanel.player.worldX = gamePanel.tileSize*37;
+		//gamePanel.player.worldY = gamePanel.tileSize*10;
+	}
+	
 }

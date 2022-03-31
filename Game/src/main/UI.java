@@ -16,8 +16,10 @@ import java.util.LinkedList;
 import java.util.Random;
 
 import entity.Entity;
+import entity.NPC_Book;
 import entity.NPC_Computer;
 import entity.NPC_Flower;
+import entity.NPC_SpaceChicken;
 import entity.Player;
 import object.OBJ_Heart;
 import object.OBJ_Key;
@@ -28,7 +30,8 @@ public class UI {
 	Graphics2D g2;
 	Font smallPixelFont;
 	BufferedImage heart_full, heart_half, heart_empty;
-	BufferedImage flower_face, computer_face;
+	BufferedImage key_empty, key_full;
+	BufferedImage flower_face, computer_face, chicken_face, book_face;
 	public boolean messageOn = false;
 	public String message = "";
 	int messageCounter = 0;
@@ -70,6 +73,15 @@ public class UI {
 		flower_face = flower.dialogueFace;
 		Entity computer = new NPC_Computer(gamePanel);
 		computer_face = computer.dialogueFace;
+		Entity chicken = new NPC_SpaceChicken(gamePanel);
+		chicken_face = chicken.dialogueFace;
+		Entity book = new NPC_Book(gamePanel);
+		book_face = book.dialogueFace;
+		
+		Entity key = new OBJ_Key(gamePanel);
+		key_empty = key.image;
+		key_full = key.down1;
+		
 	}
 	
 	public void draw(Graphics2D g2) {
@@ -86,14 +98,17 @@ public class UI {
 		// play state
 		if(gamePanel.gameState == gamePanel.playState) { // play state
 			drawPlayerLife();
+			drawPlayerKeys();
 		// pause state
 		} else if(gamePanel.gameState == gamePanel.pauseState) { // pause state
 			drawPauseScreen();
 			drawPlayerLife();
+			drawPlayerKeys();
 		// dialogue state
 		} else if (gamePanel.gameState == gamePanel.dialogueState) { // dialogue state
 			drawDialogueScreen();
 			drawPlayerLife();
+			drawPlayerKeys();
 		} else if (gamePanel.gameState == gamePanel.minigameState && gamePanel.currentMinigame == "tictactoe") {
 			if(setUpStage) {
 				setUpTicTacToe();
@@ -127,6 +142,29 @@ public class UI {
 			if(i < gamePanel.player.life) {
 				g2.drawImage(heart_full, x, y, null);
 			}
+			i++;
+			x += gamePanel.tileSize + gamePanel.tileSize/4;
+		}
+		
+	}
+	
+	public void drawPlayerKeys() {
+		int x = gamePanel.tileSize/4;
+		int y = gamePanel.tileSize + gamePanel.tileSize/3;
+		int i = 0;
+		
+		// draws max available keys
+		while(i < 3) {
+			g2.drawImage(key_empty, x, y, null);
+			i++;
+			x += gamePanel.tileSize + gamePanel.tileSize/4;
+		}
+		
+		x = gamePanel.tileSize/4;
+		y = gamePanel.tileSize + gamePanel.tileSize/3;
+		i = 0;
+		while(i < gamePanel.player.keys) {
+			g2.drawImage(key_full, x, y, null);
 			i++;
 			x += gamePanel.tileSize + gamePanel.tileSize/4;
 		}
@@ -194,19 +232,31 @@ public class UI {
 		
 		// TODO prob fix better implementation for this
 		int npcIndex = gamePanel.cChecker.checkEntity(gamePanel.player, gamePanel.npc);
-		if(gamePanel.npc[npcIndex].name == "Flower") {
-			int faceHeight = ((y + height/2) - gamePanel.tileSize);
-			g2.drawImage(flower_face, null, x+30, faceHeight);
-			x += gamePanel.tileSize*3;
-			y += gamePanel.tileSize;
-		} else if(gamePanel.npc[npcIndex].name == "Computer") {
-			int faceHeight = ((y + height/2) - gamePanel.tileSize);
-			g2.drawImage(computer_face, null, x+30, faceHeight);
-			x += gamePanel.tileSize*3;
-			y += gamePanel.tileSize;
-		} else {
-			x += gamePanel.tileSize;
-			y += gamePanel.tileSize;
+		if(npcIndex != 999) { // not sure this check is needed
+			if(gamePanel.npc[npcIndex].name == "Flower") {
+				int faceHeight = ((y + height/2) - gamePanel.tileSize);
+				g2.drawImage(flower_face, null, x+30, faceHeight);
+				x += gamePanel.tileSize*3;
+				y += gamePanel.tileSize;
+			} else if(gamePanel.npc[npcIndex].name == "Computer") {
+				int faceHeight = ((y + height/2) - gamePanel.tileSize);
+				g2.drawImage(computer_face, null, x+30, faceHeight);
+				x += gamePanel.tileSize*3;
+				y += gamePanel.tileSize;
+			} else if(gamePanel.npc[npcIndex].name == "Chicken") {
+				int faceHeight = ((y + height/2) - gamePanel.tileSize);
+				g2.drawImage(chicken_face, null, x+30, faceHeight);
+				x += gamePanel.tileSize*3;
+				y += gamePanel.tileSize;
+			} else if(gamePanel.npc[npcIndex].name == "Book") {
+				int faceHeight = ((y + height/2) - gamePanel.tileSize);
+				g2.drawImage(book_face, null, x+30, faceHeight);
+				x += gamePanel.tileSize*3;
+				y += gamePanel.tileSize;
+			} else {
+				x += gamePanel.tileSize;
+				y += gamePanel.tileSize;
+			}	
 		}
 		
 		g2.setFont(g2.getFont().deriveFont(Font.PLAIN, 24F));
@@ -247,8 +297,12 @@ public class UI {
         	gamePanel.stopMusic();
         	gamePanel.playMusic(0);
         	gamePanel.player.tttWon = true;
-        	gamePanel.obj.remove(0);
-        	gamePanel.obj.remove(0);
+        	for(int i = 0; i < gamePanel.obj.size(); i++) {
+				if(gamePanel.obj.get(i).name == "Vine") {
+					gamePanel.obj.remove(i);
+					i--;
+				}
+			}
         } else if(tttFlowerWin()) {
         	setUpStage = true;
         	gamePanel.gameState = gamePanel.playState;
@@ -367,8 +421,12 @@ public class UI {
 			gamePanel.gameState = gamePanel.playState;
         	gamePanel.stopMusic();
         	gamePanel.playMusic(0);
-        	gamePanel.obj.remove(4);
-        	gamePanel.obj.remove(4);
+        	for(int i = 0; i < gamePanel.obj.size(); i++) {
+				if(gamePanel.obj.get(i).name == "Laser") {
+					gamePanel.obj.remove(i);
+					i--;
+				}
+			}
 		}
 	}
 	

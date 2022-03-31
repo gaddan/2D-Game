@@ -9,14 +9,14 @@ import javax.imageio.ImageIO;
 import main.GamePanel;
 import main.UtilityTool;
 
-public class NPC_SpaceChicken extends Entity{
+public class NPC_Book extends Entity{
 	
 	BufferedImage sprite = null;
 	BufferedImage dialogue = null;
 
-	public NPC_SpaceChicken(GamePanel gamePanel) {
+	public NPC_Book(GamePanel gamePanel) {
 		super(gamePanel);
-		name = "Chicken";
+		name = "Book";
 		
 		direction = "down";
 		speed = 0;
@@ -27,10 +27,10 @@ public class NPC_SpaceChicken extends Entity{
 	
 	public void getNPCImage() {
 		loadSprite();
-		down1 = setUp(96, 16);
-		down2 = setUp(112, 16);
+		down1 = setUp(128, 16);
+		down2 = setUp(144, 16);
 		
-		dialogueFace = setUpDialogue(64, 0);
+		dialogueFace = setUpDialogue(96, 0);
 	}
 	
 	public void loadSprite() {
@@ -59,7 +59,10 @@ public class NPC_SpaceChicken extends Entity{
 	}
 	
 	public void setDialogue() {
-		dialogues[0] = "42...";
+		dialogues[0] = "Hi there, adventurer!";
+		dialogues[1] = "Yes, I am a flying book..";
+		dialogues[2] = "A flying guide book!!";
+		dialogues[3] = "I've heard there's a\ntreasure west of here";
 	}
 	
 	public void speak() {
